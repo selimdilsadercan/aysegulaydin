@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Facebook, Instagram, Mail } from "lucide-react";
 import { useState } from "react";
-import { Nodes, Settings, Types } from "@/database.types";
+import { Nodes, Settings } from "@/database.types";
 import CustomCursor from "./CustomCursor";
 
 interface Props {
@@ -50,9 +50,21 @@ function AnimatedText({ className, title, href, image, variant, settings, nodes,
           )}
           {variant === "variant2" && (
             <>
-              <Instagram size={35} className="text-primary hover:opacity-60" onClick={() => window.open(settings?.contact_instagram!, "_blank")} />
-              <Facebook size={35} className="text-primary hover:opacity-60" onClick={() => window.open(settings?.contact_facebook!, "_blank")} />
-              <Mail size={35} className="text-primary hover:opacity-60" onClickCapture={() => (window.location.href = `mailto:${settings?.contact_mail}}`)} />
+              <Instagram
+                size={35}
+                className="text-primary hover:opacity-60"
+                onClick={() => settings?.contact_instagram && window.open(settings.contact_instagram, "_blank")}
+              />
+              <Facebook
+                size={35}
+                className="text-primary hover:opacity-60"
+                onClick={() => settings?.contact_facebook && window.open(settings.contact_facebook, "_blank")}
+              />
+              <Mail
+                size={35}
+                className="text-primary hover:opacity-60"
+                onClickCapture={() => settings?.contact_mail && (window.location.href = `mailto:${settings.contact_mail}`)}
+              />
             </>
           )}
           {variant === "variant3" && (
