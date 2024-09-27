@@ -82,7 +82,7 @@ export default function Page() {
                 </video>
               ))}
             </div>
-            <Exit text="Exit Exhibition" />
+            <Exit text="Exit Exhibition" width={80} />
           </div>
         </div>
       </div>
