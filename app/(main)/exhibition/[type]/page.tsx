@@ -7,7 +7,6 @@ import ItemBig from "@/components/ItemBig";
 import { Nodes, Types } from "@/database.types";
 
 export default function Page({ params }: { params: { type: Types } }) {
-  const [parsedNodes, setParsedNotes] = useState<Nodes[] | null>(null);
   const [filteredNodes, setFilteredNodes] = useState<Nodes[] | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -18,7 +17,6 @@ export default function Page({ params }: { params: { type: Types } }) {
     const storedNodes = sessionStorage.getItem("nodesData");
     if (storedNodes) {
       const parsedData = JSON.parse(storedNodes) as Nodes[];
-      setParsedNotes(parsedData);
       setFilteredNodes(parsedData.filter((node) => node.type === params.type));
     }
   }, [params.type]);
