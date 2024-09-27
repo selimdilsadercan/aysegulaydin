@@ -25,13 +25,14 @@ async function Page() {
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="RECENT WORKS"
-          href="/"
+          href="/exhibition/recent"
           variant="variant1"
+          nodes={nodesData}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="PHOTO"
-          href="/photos"
+          href="/exhibition/photo"
           variant="variant1"
           nodes={nodesData}
         />
@@ -44,14 +45,17 @@ async function Page() {
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="PERFORMANCE INSTALLATIONS"
-          href="/"
+          href="/exhibition/installation"
           variant="variant1"
+          nodes={nodesData}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="PAINTING/SCULPTURE"
-          href="/"
+          href="/exhibition/painting"
           variant="variant1"
+          nodes={nodesData}
+          isSetNodes={true}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Facebook, Instagram, Mail } from "lucide-react";
 import { useState } from "react";
-import { Nodes, Settings } from "@/database.types";
+import { Nodes, Settings, Types } from "@/database.types";
 import CustomCursor from "./CustomCursor";
 
 interface Props {
@@ -15,15 +15,15 @@ interface Props {
   image?: string;
   settings?: Settings;
   nodes?: Nodes[];
+  isSetNodes?: boolean;
 }
 
-function AnimatedText({ className, title, href, image, variant, settings, nodes }: Props) {
+function AnimatedText({ className, title, href, image, variant, settings, nodes, isSetNodes = false }: Props) {
   const router = useRouter();
   const [isSlided, setIsSlided] = useState(false);
 
-  if (nodes) {
+  if (isSetNodes && nodes) {
     sessionStorage.setItem("nodesData", JSON.stringify(nodes));
-    console.log(nodes);
   }
 
   const handleInteraction = () => {

@@ -4,10 +4,11 @@ import { useRef, useEffect, useState } from "react";
 import Exit from "@/components/Exit";
 import Item from "@/components/Item";
 import ItemBig from "@/components/ItemBig";
-import { Nodes } from "@/database.types";
+import { Nodes, Types } from "@/database.types";
 
-export default function Page() {
-  const [nodes, setNodes] = useState<Nodes[] | null>(null);
+export default function Page({ params }: { params: { type: Types } }) {
+  const [parsedNodes, setParsedNotes] = useState<Nodes[] | null>(null);
+  const [filteredNodes, setFilteredNodes] = useState<Nodes[] | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [translateX, setTranslateX] = useState(0);
@@ -16,9 +17,11 @@ export default function Page() {
   useEffect(() => {
     const storedNodes = sessionStorage.getItem("nodesData");
     if (storedNodes) {
-      setNodes(JSON.parse(storedNodes));
+      const parsedData = JSON.parse(storedNodes) as Nodes[];
+      setParsedNotes(parsedData);
+      setFilteredNodes(parsedData.filter((node) => node.type === params.type));
     }
-  }, []);
+  }, [params.type]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -58,8 +61,8 @@ export default function Page() {
           style={{ transform: `translateX(${translateX}px)` }}
         >
           <div className="hidden md:flex flex-row items-center gap-[120px] px-[120px]">
-            {nodes &&
-              nodes.map((photo, index) => (
+            {filteredNodes &&
+              filteredNodes.map((photo, index) => (
                 <div className="group flex h-fit w-fit transition-all" key={index}>
                   <Item className="block group-hover:hidden" src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
                   <ItemBig className="hidden group-hover:block" src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
