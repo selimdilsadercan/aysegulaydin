@@ -1,16 +1,24 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import Exit from "@/components/Exit";
 import Item from "@/components/Item";
 import ItemBig from "@/components/ItemBig";
-import photos from "@/data/photos";
-import { useRef, useEffect, useState } from "react";
+import { Nodes } from "@/database.types";
 
 export default function Page() {
+  const [nodes, setNodes] = useState<Nodes[] | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [translateX, setTranslateX] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
+
+  useEffect(() => {
+    const storedNodes = sessionStorage.getItem("nodesData");
+    if (storedNodes) {
+      setNodes(JSON.parse(storedNodes));
+    }
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -21,9 +29,6 @@ export default function Page() {
       setContentWidth(content.scrollWidth - window.innerWidth);
     };
 
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-
     const handleScroll = () => {
       if (container) {
         const scrollPercentage = container.scrollTop / (container.scrollHeight - container.clientHeight);
@@ -31,24 +36,18 @@ export default function Page() {
       }
     };
 
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
     container.addEventListener("scroll", handleScroll);
+
+    const timer = setTimeout(updateDimensions, 1000);
 
     return () => {
       window.removeEventListener("resize", updateDimensions);
       container.removeEventListener("scroll", handleScroll);
+      clearTimeout(timer);
     };
   }, [contentWidth]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const content = contentRef.current;
-      if (content) {
-        setContentWidth(content.scrollWidth - window.innerWidth);
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div ref={containerRef} className="h-screen overflow-y-scroll">
@@ -59,13 +58,14 @@ export default function Page() {
           style={{ transform: `translateX(${translateX}px)` }}
         >
           <div className="hidden md:flex flex-row items-center gap-[120px] px-[120px]">
-            {photos.map((photo, index) => (
-              <div className="group flex h-fit w-fit transition-all" key={index}>
-                <Item className="block group-hover:hidden" key={index} src={photo.src} title={photo.title} description={photo.description} />
-                <ItemBig className="hidden group-hover:block" key={index} src={photo.src} title={photo.title} description={photo.description} />
-              </div>
-            ))}
-            <Exit text="Exit Exibition" width={80} />
+            {nodes &&
+              nodes.map((photo, index) => (
+                <div className="group flex h-fit w-fit transition-all" key={index}>
+                  <Item className="block group-hover:hidden" src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
+                  <ItemBig className="hidden group-hover:block" src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
+                </div>
+              ))}
+            <Exit text="Exit Exhibition" width={80} />
           </div>
         </div>
       </div>

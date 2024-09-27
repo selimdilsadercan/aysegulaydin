@@ -5,9 +5,12 @@ import Image from "next/image";
 async function Page() {
   const db = createClient();
 
-  const { data } = await db.from("setttings").select();
-  if (!data || (data && data.length == 0)) return null;
-  const settings = data[0];
+  const { data: settingsData } = await db.from("setttings").select();
+  if (!settingsData || (settingsData && settingsData.length == 0)) return null;
+  const settings = settingsData[0];
+
+  const { data: nodesData } = await db.from("nodes").select();
+  if (!nodesData || (nodesData && nodesData.length == 0)) return null;
 
   return (
     <div className="h-full flex flex-row justify-center items-center bg-background">
@@ -30,6 +33,7 @@ async function Page() {
           title="PHOTO"
           href="/photos"
           variant="variant1"
+          nodes={nodesData}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"

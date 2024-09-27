@@ -2,10 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Facebook, Instagram, Mail, Twitter } from "lucide-react";
+import { ArrowRight, Facebook, Instagram, Mail } from "lucide-react";
 import { useState } from "react";
+import { Nodes, Settings } from "@/database.types";
 import CustomCursor from "./CustomCursor";
-import { Settings } from "@/database.types";
 
 interface Props {
   className?: string;
@@ -14,11 +14,17 @@ interface Props {
   variant: "variant1" | "variant2" | "variant3";
   image?: string;
   settings?: Settings;
+  nodes?: Nodes[];
 }
 
-function AnimatedText({ className, title, href, image, variant, settings }: Props) {
+function AnimatedText({ className, title, href, image, variant, settings, nodes }: Props) {
   const router = useRouter();
   const [isSlided, setIsSlided] = useState(false);
+
+  if (nodes) {
+    sessionStorage.setItem("nodesData", JSON.stringify(nodes));
+    console.log(nodes);
+  }
 
   const handleInteraction = () => {
     if (href) {
