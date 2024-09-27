@@ -26,7 +26,7 @@ export default function Page({ params }: { params: { type: Types } }) {
     if (!container || !content) return;
 
     const updateDimensions = () => {
-      setContentWidth(content.scrollWidth - window.innerWidth);
+      setContentWidth(content.scrollWidth - window.innerWidth + 120);
     };
 
     const handleScroll = () => {
