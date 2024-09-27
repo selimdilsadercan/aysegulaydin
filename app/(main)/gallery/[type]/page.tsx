@@ -3,7 +3,6 @@
 import { useRef, useEffect, useState } from "react";
 import Exit from "@/components/Exit";
 import Item from "@/components/Item";
-import ItemBig from "@/components/ItemBig";
 import { Nodes, Types } from "@/database.types";
 
 export default function Page({ params }: { params: { type: Types } }) {
