@@ -2,9 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Instagram, Mail, Twitter } from "lucide-react";
+import { ArrowRight, Facebook, Instagram, Mail, Twitter } from "lucide-react";
 import { useState } from "react";
 import CustomCursor from "./CustomCursor";
+import { Settings } from "@/database.types";
 
 interface Props {
   className?: string;
@@ -12,9 +13,10 @@ interface Props {
   href?: string;
   variant: "variant1" | "variant2" | "variant3";
   image?: string;
+  settings?: Settings;
 }
 
-function AnimatedText({ className, title, href, image, variant }: Props) {
+function AnimatedText({ className, title, href, image, variant, settings }: Props) {
   const router = useRouter();
   const [isSlided, setIsSlided] = useState(false);
 
@@ -42,9 +44,9 @@ function AnimatedText({ className, title, href, image, variant }: Props) {
           )}
           {variant === "variant2" && (
             <>
-              <Instagram size={35} className="text-primary hover:opacity-60" onClick={() => window.open("https://www.instagram.com/selimdilsad/", "_blank")} />
-              <Twitter size={35} className="text-primary hover:opacity-60" onClick={() => window.open("https://x.com/selimdilsadercn", "_blank")} />
-              <Mail size={35} className="text-primary hover:opacity-60" onClickCapture={() => (window.location.href = "mailto:dilsadselim@gmail.com")} />
+              <Instagram size={35} className="text-primary hover:opacity-60" onClick={() => window.open(settings?.contact_instagram!, "_blank")} />
+              <Facebook size={35} className="text-primary hover:opacity-60" onClick={() => window.open(settings?.contact_facebook!, "_blank")} />
+              <Mail size={35} className="text-primary hover:opacity-60" onClickCapture={() => (window.location.href = `mailto:${settings?.contact_mail}}`)} />
             </>
           )}
           {variant === "variant3" && (
