@@ -40,7 +40,6 @@ export default function AnimatedText({ className, title, href, image, variant, s
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
         setCursorPosition({
           x: e.clientX,
           y: e.clientY
