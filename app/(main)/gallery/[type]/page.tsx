@@ -61,12 +61,11 @@ export default function Page({ params }: { params: { type: Types } }) {
           <div className="hidden md:flex flex-row items-center gap-[120px] px-[120px]">
             {filteredNodes &&
               filteredNodes.map((photo, index) => (
-                <div className="group flex h-fit w-fit transition-all" key={index}>
-                  <Item className="block group-hover:hidden" src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
-                  <ItemBig className="hidden group-hover:block" src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
+                <div className="flex h-fit w-fit transition-all" key={index}>
+                  <Item src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
                 </div>
               ))}
-            <Exit text="Exit Exhibition" width={80} />
+            <Exit text="Exit Gallery" width={80} />
           </div>
         </div>
       </div>

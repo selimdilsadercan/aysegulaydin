@@ -25,14 +25,14 @@ async function Page() {
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="RECENT WORKS"
-          href="/exhibition/recent"
+          href="/gallery/recent"
           variant="variant1"
           nodes={nodesData}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="PHOTO"
-          href="/exhibition/photo"
+          href="/gallery/photo"
           variant="variant1"
           nodes={nodesData}
         />
@@ -45,14 +45,14 @@ async function Page() {
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="PERFORMANCE INSTALLATIONS"
-          href="/exhibition/installation"
+          href="/gallery/installation"
           variant="variant1"
           nodes={nodesData}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="PAINTING/SCULPTURE"
-          href="/exhibition/painting"
+          href="/gallery/painting"
           variant="variant1"
           nodes={nodesData}
           isSetNodes={true}
