@@ -18,7 +18,7 @@ interface Props {
 }
 
 export default function Item({ className, src, title, description, isVideo, id, type, technical }: Props) {
-  const [dimensions, setDimensions] = useState({ width: 240, height: 240 });
+  const [dimensions, setDimensions] = useState({ width: 320, height: 320 });
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -38,10 +38,10 @@ export default function Item({ className, src, title, description, isVideo, id, 
   const handleMediaLoad = (naturalWidth: number, naturalHeight: number) => {
     const aspectRatio = naturalWidth / naturalHeight;
     if (isSmallScreen) {
-      const fixedWidth = 240;
+      const fixedWidth = 320;
       setDimensions({ width: fixedWidth, height: fixedWidth / aspectRatio });
     } else {
-      const fixedHeight = 240;
+      const fixedHeight = 320;
       setDimensions({ width: fixedHeight * aspectRatio, height: fixedHeight });
     }
   };
@@ -87,8 +87,8 @@ export default function Item({ className, src, title, description, isVideo, id, 
       <div
         className={cn("relative mb-2 md:mb-6", isSmallScreen ? "w-60 h-auto" : "w-auto h-60")}
         style={{
-          width: isSmallScreen ? "240px" : `${dimensions.width}px`,
-          height: isSmallScreen ? `${dimensions.height}px` : "240px"
+          width: isSmallScreen ? "320px" : `${dimensions.width}px`,
+          height: isSmallScreen ? `${dimensions.height}px` : "320px"
         }}
       >
         {isVideo ? (

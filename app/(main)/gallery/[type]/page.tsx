@@ -39,7 +39,7 @@ export default function Page({ params }: { params: { type: Type } }) {
         const video = document.createElement("video");
         video.onloadedmetadata = () => {
           const aspectRatio = video.videoWidth / video.videoHeight;
-          const calculatedWidth = Math.round(240 * aspectRatio); // Assuming 240px height
+          const calculatedWidth = Math.round(320 * aspectRatio); // Assuming 320px height
           resolve(calculatedWidth);
         };
         video.src = node.image_url || "";
@@ -47,7 +47,7 @@ export default function Page({ params }: { params: { type: Type } }) {
         const img = new Image();
         img.onload = () => {
           const aspectRatio = img.width / img.height;
-          const calculatedWidth = Math.round(240 * aspectRatio); // Assuming 240px height
+          const calculatedWidth = Math.round(320 * aspectRatio); // Assuming 320px height
           resolve(calculatedWidth);
         };
         img.src = node.image_url || "";
