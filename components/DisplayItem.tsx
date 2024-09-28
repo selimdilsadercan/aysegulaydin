@@ -9,10 +9,11 @@ interface Props {
   src: string;
   title?: string;
   description: string;
+  technical: string;
   isVideo: boolean;
 }
 
-export default function DisplayItem({ className, src, title, description, isVideo }: Props) {
+export default function DisplayItem({ className, src, title, description, technical, isVideo }: Props) {
   const [dimensions, setDimensions] = useState({ width: 480, height: 720 });
   const [isLoaded, setIsLoaded] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
@@ -116,7 +117,8 @@ export default function DisplayItem({ className, src, title, description, isVide
       </div>
       <div className="p-4 text-white flex flex-col justify-center max-w-md">
         {title && <h2 className="text-[13px] font-normal text-primary mb-3 uppercase">{title}</h2>}
-        <p className="text-[13px] font-normal text-secondary">{description}</p>
+        <p className="text-[13px] font-normal text-secondary mb-3">{description}</p>
+        <p className="text-[13px] font-normal text-secondary opacity-75">{technical}</p>
       </div>
     </div>
   );

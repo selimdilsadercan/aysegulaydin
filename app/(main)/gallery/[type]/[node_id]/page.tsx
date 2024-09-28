@@ -1,6 +1,7 @@
 "use client";
 
 import DisplayItem from "@/components/DisplayItem";
+import ExhibitionItem from "@/components/ExhibitionItem";
 import { ExtendedNode } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -51,6 +52,7 @@ export default function Page({ params }: { params: { type: string; node_id: stri
     <div className="flex flex-col md:flex-row h-screen justify-start items-center gap-8 md:gap-16 p-4 md:p-8 lg:p-16">
       <div className="w-full md:w-auto">
         <DisplayItem
+          technical={selectedNode.technical || ""}
           title={selectedNode.name || ""}
           src={selectedNode.image_url || ""}
           isVideo={selectedNode.is_video || false}
@@ -58,12 +60,13 @@ export default function Page({ params }: { params: { type: string; node_id: stri
         />
       </div>
 
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full md:flex-1">
-        {selectedNode.nodes_extras.map((extraNode) => (
-          <div key={extraNode.id} className="border border-gray-300 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white">
-            <h2 className="text-lg font-semibold text-gray-800">{extraNode.description}</h2>
-          </div>
-        ))}
+      <div className="">
+        <p className="ml-1 mb-4">Exhition →</p>
+        <div className="flex flex-row items-start justify-center gap-1">
+          {selectedNode.nodes_extras.map((extraNode) => (
+            <ExhibitionItem src={extraNode.image_url || ""} isVideo={extraNode.is_video || false} />
+          ))}
+        </div>
       </div>
     </div>
   );

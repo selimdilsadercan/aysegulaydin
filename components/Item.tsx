@@ -120,7 +120,6 @@ export default function Item({ className, src, title, description, isVideo, id, 
       >
         <p className="w-full overflow-visible font-normal text-primary text-sm text-start uppercase">{title}</p>
         <p className="w-full line-clamp-3 font-normal text-secondary text-sm text-start">{description}</p>
-        <p className="w-full line-clamp-3 font-normal text-secondary text-sm text-start">{technical}</p>
       </div>
     </div>
   );
