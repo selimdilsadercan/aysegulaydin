@@ -27,7 +27,7 @@ export default function Page({ params }: { params: { type: Type } }) {
     }
 
     const parsedData = JSON.parse(storedNodes) as Node[];
-    setFilteredNodes(parsedData.filter((node) => node.type === params.type));
+    setFilteredNodes(parsedData.filter((node) => node.type === params.type).sort((a, b) => (a.index ?? 0) - (b.index ?? 0)));
   }, [params.type, router]);
 
   const calculateItemWidth = (node: Node): Promise<number> => {
