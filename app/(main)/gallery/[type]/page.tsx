@@ -121,7 +121,7 @@ export default function Page({ params }: { params: { type: Type } }) {
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin" />
+        <div className="text-l font-normal text-gray-700">Loading...</div>
       </div>
     );
   }
@@ -155,7 +155,7 @@ export default function Page({ params }: { params: { type: Type } }) {
             <div className="flex flex-row items-start gap-[120px] px-[120px]">
               {filteredNodes &&
                 filteredNodes.map((node, index) => (
-                  <div className="flex h-fit w-fit transition-all" key={index} style={{ width: `${itemWidths[index]}px` }}>
+                  <div className="flex h-fit w-fit" key={index} style={{ width: `${itemWidths[index]}px` }}>
                     <Item
                       id={node.id}
                       type={params.type}
