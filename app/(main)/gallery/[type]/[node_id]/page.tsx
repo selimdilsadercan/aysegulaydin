@@ -58,7 +58,7 @@ export default function ExhibitionPage({ params }: { params: { type: Type; node_
     });
   };
 
-  const calculateExtraNodeWidth = (extraNode: ExtraNode): number => {
+  const calculateExtraNodeWidth = (): number => {
     // Assuming a fixed width for extra nodes, adjust as needed
     return 240;
   };
