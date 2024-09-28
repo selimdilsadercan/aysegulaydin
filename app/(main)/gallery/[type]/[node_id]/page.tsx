@@ -158,7 +158,7 @@ export default function ExhibitionPage({ params }: { params: { type: Type; node_
             </div>
           )}
           {selectedNode &&
-            selectedNode.nodes_extras.map((extraNode: ExtraNode, index: number) => (
+            selectedNode.nodes_extras.map((extraNode: ExtraNode) => (
               <div className="flex h-fit w-fit transition-all" key={extraNode.id}>
                 <Item isVideo={false} src={extraNode.image_url || ""} description={extraNode.description || ""} type={params.type} />
               </div>
