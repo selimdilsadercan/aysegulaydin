@@ -2,20 +2,25 @@
 
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
+import { Type } from "@/types";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface Props {
   className?: string;
   src: string;
-  title: string;
+  title?: string;
   description: string;
   isVideo: boolean;
+  id?: string;
+  type?: Type;
 }
 
-export default function Item({ className, src, title, description, isVideo }: Props) {
+export default function Item({ className, src, title, description, isVideo, id, type }: Props) {
   const [dimensions, setDimensions] = useState({ width: 240, height: 240 });
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -50,8 +55,14 @@ export default function Item({ className, src, title, description, isVideo }: Pr
     }
   }, [isVideo]);
 
+  const handleClick = () => {
+    if (id) {
+      router.push(`/gallery/${type}/${id}`);
+    }
+  };
+
   return (
-    <div className={cn("flex flex-col justify-start items-start", className)}>
+    <div className={cn("flex flex-col justify-start items-start cursor-pointer", className)} onClick={handleClick}>
       <div
         className={cn("relative mb-2 md:mb-6", isSmallScreen ? "w-60 h-auto" : "w-auto h-60")}
         style={{

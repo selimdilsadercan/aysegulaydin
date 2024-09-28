@@ -1,19 +1,38 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Exit from "@/components/Exit";
 import Image from "next/image";
 import { Settings } from "@/types";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
-function Page() {
+export default function Page() {
   const router = useRouter();
+  const [settings, setSettings] = useState<Settings | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const settingsData = sessionStorage.getItem("settingsData");
-  if (!settingsData) {
-    router.push("/");
-    return;
+  useEffect(() => {
+    const settingsData = sessionStorage.getItem("settingsData");
+    if (!settingsData) {
+      router.push("/");
+    } else {
+      setSettings(JSON.parse(settingsData) as Settings);
+    }
+    setIsLoading(false);
+  }, [router]);
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex justify-center items-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
   }
-  const settings = JSON.parse(settingsData) as Settings;
+
+  if (!settings) {
+    return null;
+  }
 
   return (
     <div className="h-full flex flex-row justify-start items-center gap-2.5">
@@ -28,5 +47,3 @@ function Page() {
     </div>
   );
 }
-
-export default Page;
