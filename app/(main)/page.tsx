@@ -25,35 +25,33 @@ async function Page() {
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="RECENT WORKS"
+          variant="variant1"
           href="/gallery/recent"
-          variant="variant1"
           nodes={nodesData}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
-          title="PHOTO"
-          href="/gallery/photo"
-          variant="variant1"
+          title="PHOTO/VIDEO/AUDIO"
+          variant="variant4"
           nodes={nodesData}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
-          title="VIDEO/AUDIO"
-          href="/gallery/video"
-          variant="variant1"
-        />
-        <AnimatedText
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
-          title="PERFORMANCE INSTALLATIONS"
-          href="/gallery/installation"
-          variant="variant1"
+          title="PERFORMANCE/INSTALLATIONS"
+          variant="variant6"
           nodes={nodesData}
         />
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
-          title="PAINTING/SCULPTURE"
-          href="/gallery/painting"
+          title="PAINTINGS"
+          variant="variant5"
+          nodes={nodesData}
+        />
+        <AnimatedText
+          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
+          title="SCULPTURE"
           variant="variant1"
+          href="/gallery/sculpture"
           nodes={nodesData}
           isSetNodes={true}
         />

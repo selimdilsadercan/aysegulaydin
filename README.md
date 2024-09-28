@@ -8,4 +8,4 @@
 - [x] html, body, :root { height: 100% } thing at app/globals.css
 
 - [x] "npm i @supabase/ssr"
-- [x] "supabase gen types typescript --project-id bmxnokmxpfhnlsughdtt > database.types.ts"
+- [x] "supabase gen types typescript --project-id bmxnokmxpfhnlsughdtt > types/database.ts"
