@@ -14,13 +14,7 @@ async function Page() {
 
   return (
     <div className="h-full flex flex-row justify-center items-center bg-background">
-      <Image
-        className="w-full h-full opacity-75 object-contain hidden lg:block"
-        src="https://utfs.io/f/RH21XHSrigMIaTDWfRscKvOy659WtGpnAxbXDzFmdflZ7kjS"
-        alt=""
-        width={100}
-        height={200}
-      />
+      <Image className="w-full h-full opacity-75 object-contain hidden lg:block" src={settings.main_page_image_url || ""} alt="" width={100} height={200} />
       <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-12">
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
