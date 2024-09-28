@@ -1,13 +1,19 @@
+"use client";
+
 import Exit from "@/components/Exit";
 import Image from "next/image";
-import { createClient } from "@/lib/db";
+import { Settings } from "@/types";
+import { useRouter } from "next/navigation";
 
-async function Page() {
-  const db = createClient();
+function Page() {
+  const router = useRouter();
 
-  const { data } = await db.from("setttings").select();
-  if (!data || (data && data.length == 0)) return null;
-  const settings = data[0];
+  const settingsData = sessionStorage.getItem("settingsData");
+  if (!settingsData) {
+    router.push("/");
+    return;
+  }
+  const settings = JSON.parse(settingsData) as Settings;
 
   return (
     <div className="h-full flex flex-row justify-start items-center gap-2.5">

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Facebook, Instagram, Mail } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { Nodes, Settings } from "@/database.types";
+import { ExtendedNode, Settings } from "@/types";
 import CustomCursor from "./CustomCursor";
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   variant: "variant1" | "variant2" | "variant3";
   image?: string;
   settings?: Settings;
-  nodes?: Nodes[];
+  nodes?: ExtendedNode[];
   isSetNodes?: boolean;
 }
 
@@ -27,6 +27,10 @@ export default function AnimatedText({ className, title, href, image, variant, s
 
   if (isSetNodes && nodes) {
     sessionStorage.setItem("nodesData", JSON.stringify(nodes));
+  }
+
+  if (settings) {
+    sessionStorage.setItem("settingsData", JSON.stringify(settings));
   }
 
   const handleInteraction = () => {

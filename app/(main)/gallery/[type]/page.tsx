@@ -1,16 +1,16 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
+import { Node, Type } from "@/types";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Exit from "@/components/Exit";
 import Item from "@/components/Item";
-import { Nodes, Types } from "@/database.types";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
 
-export default function Page({ params }: { params: { type: Types } }) {
+export default function Page({ params }: { params: { type: Type } }) {
   const router = useRouter();
 
-  const [filteredNodes, setFilteredNodes] = useState<Nodes[] | null>(null);
+  const [filteredNodes, setFilteredNodes] = useState<Node[] | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [translateX, setTranslateX] = useState(0);
@@ -26,11 +26,11 @@ export default function Page({ params }: { params: { type: Types } }) {
       return;
     }
 
-    const parsedData = JSON.parse(storedNodes) as Nodes[];
+    const parsedData = JSON.parse(storedNodes) as Node[];
     setFilteredNodes(parsedData.filter((node) => node.type === params.type));
   }, [params.type, router]);
 
-  const calculateItemWidth = (node: Nodes): Promise<number> => {
+  const calculateItemWidth = (node: Node): Promise<number> => {
     return new Promise((resolve) => {
       if (node.is_video) {
         const video = document.createElement("video");
