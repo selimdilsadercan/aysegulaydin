@@ -26,7 +26,11 @@ export default function Page({ params }: { params: { type: Type } }) {
     }
 
     const parsedData = JSON.parse(storedNodes) as Node[];
-    setFilteredNodes(parsedData.filter((node) => node.type === params.type).sort((a, b) => (a.index ?? 0) - (b.index ?? 0)));
+    const filtered = params.type === "recent" ? parsedData.filter((node) => node.is_recent) : parsedData.filter((node) => node.type === params.type);
+
+    const sortedNodes = filtered.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+
+    setFilteredNodes(sortedNodes);
   }, [params.type, router]);
 
   const calculateItemWidth = (node: Node): Promise<number> => {
