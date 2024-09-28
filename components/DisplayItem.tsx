@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function DisplayItem({ className, src, title, description, isVideo }: Props) {
-  const [dimensions, setDimensions] = useState({ width: 480, height: 270 });
+  const [dimensions, setDimensions] = useState({ width: 480, height: 720 });
   const [isLoaded, setIsLoaded] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,19 +21,20 @@ export default function DisplayItem({ className, src, title, description, isVide
   const calculateDimensions = (naturalWidth: number, naturalHeight: number) => {
     if (!containerRef.current) return;
 
+    const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    const maxHeight = Math.floor(viewportHeight * 0.9);
-    const aspectRatio = naturalWidth / naturalHeight;
+    const maxWidth = Math.min(1080, viewportWidth * 0.9);
+    const maxHeight = viewportHeight * 0.9;
 
-    let newWidth = 480;
-    let newHeight = Math.round(newWidth / aspectRatio);
+    let newWidth = maxWidth;
+    let newHeight = (newWidth / naturalWidth) * naturalHeight;
 
     if (newHeight > maxHeight) {
       newHeight = maxHeight;
-      newWidth = Math.round(newHeight * aspectRatio);
+      newWidth = (newHeight / naturalHeight) * naturalWidth;
     }
 
-    setDimensions({ width: newWidth, height: newHeight });
+    setDimensions({ width: Math.round(newWidth), height: Math.round(newHeight) });
     setIsLoaded(true);
   };
 
@@ -72,32 +73,43 @@ export default function DisplayItem({ className, src, title, description, isVide
 
   return (
     <div ref={containerRef} className={cn("flex flex-col lg:flex-row items-start lg:items-center justify-center gap-6 lg:gap-12", className)}>
-      <div style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px` }} className="relative mx-auto lg:mx-0">
+      <div className="relative mx-auto lg:mx-0">
         {isVideo ? (
-          <video
-            ref={mediaRef as React.RefObject<HTMLVideoElement>}
-            src={src}
-            autoPlay
-            loop
-            playsInline
-            className={cn("w-full h-full object-contain border-2 border-white shadow-xl", !isLoaded && "invisible")}
-            onLoadedMetadata={() => setIsLoaded(true)}
-          >
-            Your browser does not support the video tag.
-          </video>
+          <div style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px` }}>
+            <video
+              ref={mediaRef as React.RefObject<HTMLVideoElement>}
+              src={src}
+              autoPlay
+              loop
+              playsInline
+              muted
+              className={cn("w-full h-full object-contain border-2 border-white shadow-xl", !isLoaded && "invisible")}
+              onLoadedMetadata={(e) => {
+                const video = e.target as HTMLVideoElement;
+                calculateDimensions(video.videoWidth, video.videoHeight);
+              }}
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
         ) : (
-          <Image
-            ref={mediaRef as React.RefObject<HTMLImageElement>}
-            src={src}
-            alt={`An Image About ${title}`}
-            layout="fill"
-            objectFit="contain"
-            className={cn("border-2 border-white shadow-xl", !isLoaded && "invisible")}
-            onLoadingComplete={({ naturalWidth, naturalHeight }) => calculateDimensions(naturalWidth, naturalHeight)}
-          />
+          <div style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px` }}>
+            <Image
+              ref={mediaRef as React.RefObject<HTMLImageElement>}
+              src={src}
+              alt={`An Image About ${title}`}
+              layout="fill"
+              objectFit="contain"
+              className={cn("border-2 border-white shadow-xl", !isLoaded && "invisible")}
+              onLoadingComplete={({ naturalWidth, naturalHeight }) => calculateDimensions(naturalWidth, naturalHeight)}
+            />
+          </div>
         )}
         {!isLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-gray-200"
+            style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px` }}
+          >
             <p className="text-gray-500">Loading...</p>
           </div>
         )}
