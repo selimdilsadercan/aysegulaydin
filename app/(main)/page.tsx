@@ -39,7 +39,7 @@ async function Page() {
         <AnimatedText
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
           title="VIDEO/AUDIO"
-          href="/videos"
+          href="/gallery/video"
           variant="variant1"
         />
         <AnimatedText

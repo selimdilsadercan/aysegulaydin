@@ -5,8 +5,9 @@ import Exit from "@/components/Exit";
 import Item from "@/components/Item";
 import { Nodes, Types } from "@/database.types";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
-export default function Component({ params }: { params: { type: Types } }) {
+export default function Page({ params }: { params: { type: Types } }) {
   const router = useRouter();
 
   const [filteredNodes, setFilteredNodes] = useState<Nodes[] | null>(null);
@@ -15,6 +16,8 @@ export default function Component({ params }: { params: { type: Types } }) {
   const [translateX, setTranslateX] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [itemWidths, setItemWidths] = useState<number[]>([]);
 
   useEffect(() => {
     const storedNodes = sessionStorage.getItem("nodesData");
@@ -27,25 +30,77 @@ export default function Component({ params }: { params: { type: Types } }) {
     setFilteredNodes(parsedData.filter((node) => node.type === params.type));
   }, [params.type, router]);
 
+  const calculateItemWidth = (node: Nodes): Promise<number> => {
+    return new Promise((resolve) => {
+      if (node.is_video) {
+        const video = document.createElement("video");
+        video.onloadedmetadata = () => {
+          const aspectRatio = video.videoWidth / video.videoHeight;
+          const calculatedWidth = Math.round(240 * aspectRatio); // Assuming 240px height
+          resolve(calculatedWidth);
+        };
+        video.src = node.image_url || "";
+      } else {
+        const img = new Image();
+        img.onload = () => {
+          const aspectRatio = img.width / img.height;
+          const calculatedWidth = Math.round(240 * aspectRatio); // Assuming 240px height
+          resolve(calculatedWidth);
+        };
+        img.src = node.image_url || "";
+      }
+    });
+  };
+
+  useEffect(() => {
+    const calculateWidths = async () => {
+      if (filteredNodes) {
+        const widths = await Promise.all(filteredNodes.map((node) => calculateItemWidth(node)));
+        setItemWidths(widths);
+        setIsLoading(false);
+      }
+    };
+
+    calculateWidths();
+  }, [filteredNodes]);
+
   const updateDimensions = useCallback(() => {
     const smallScreen = window.innerWidth < 768; // Adjust this breakpoint as needed
     setIsSmallScreen(smallScreen);
 
-    if (!smallScreen && contentRef.current) {
-      setContentWidth(contentRef.current.scrollWidth - window.innerWidth + 120);
+    if (!smallScreen && contentRef.current && containerRef.current && filteredNodes) {
+      const containerWidth = containerRef.current.clientWidth;
+      const gapWidth = 120; // Gap between items
+      const exitButtonWidth = 80; // Width of the Exit button
+      const totalItemsWidth = itemWidths.reduce((sum, width) => sum + width + gapWidth, 0) + exitButtonWidth + 2 * gapWidth; // Adding padding on both sides
+      const newContentWidth = Math.max(0, totalItemsWidth - containerWidth);
+      setContentWidth(newContentWidth);
     } else {
       setContentWidth(0);
     }
-  }, []);
+
+    // Reset translateX when dimensions update
+    setTranslateX(0);
+  }, [filteredNodes, itemWidths]);
 
   useEffect(() => {
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
+    const handleResize = () => {
+      updateDimensions();
+    };
+
+    handleResize(); // Call once to set initial state
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("resize", handleResize);
     };
   }, [updateDimensions]);
+
+  useEffect(() => {
+    if (filteredNodes && itemWidths.length === filteredNodes.length) {
+      updateDimensions();
+    }
+  }, [filteredNodes, itemWidths, updateDimensions]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -63,14 +118,22 @@ export default function Component({ params }: { params: { type: Types } }) {
     };
   }, [contentWidth, isSmallScreen]);
 
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <div ref={containerRef} className={`h-screen ${isSmallScreen ? "overflow-y-auto" : "overflow-y-scroll"}`}>
+    <div ref={containerRef} className={`h-screen ${isSmallScreen ? "overflow-y-auto" : "overflow-y-scroll overflow-x-hidden"}`}>
       {isSmallScreen ? (
         <div className="flex flex-col items-center gap-8 py-8 px-4">
           {filteredNodes &&
-            filteredNodes.map((photo, index) => (
+            filteredNodes.map((node, index) => (
               <div className="flex h-fit w-fit transition-all" key={index}>
-                <Item src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
+                <Item isVideo={node.is_video || false} src={node.image_url || ""} title={node.name || ""} description={node.description || ""} />
               </div>
             ))}
           <Exit text="Exit Gallery" width={80} />
@@ -82,14 +145,14 @@ export default function Component({ params }: { params: { type: Types } }) {
             className="sticky top-0 flex h-screen transition-transform duration-300 ease-out items-center"
             style={{ transform: `translateX(${translateX}px)` }}
           >
-            <div className="flex flex-row items-center gap-[120px] px-[120px]">
+            <div className="flex flex-row items-start gap-[120px] px-[120px]">
               {filteredNodes &&
-                filteredNodes.map((photo, index) => (
-                  <div className="flex h-fit w-fit transition-all" key={index}>
-                    <Item src={photo.image_url || ""} title={photo.name || ""} description={photo.description || ""} />
+                filteredNodes.map((node, index) => (
+                  <div className="flex h-fit w-fit transition-all" key={index} style={{ width: `${itemWidths[index]}px` }}>
+                    <Item isVideo={node.is_video || false} src={node.image_url || ""} title={node.name || ""} description={node.description || ""} />
                   </div>
                 ))}
-              <Exit text="Exit Gallery" width={80} />
+              <Exit className="pt-10" text="Exit Gallery" width={80} />
             </div>
           </div>
         </div>

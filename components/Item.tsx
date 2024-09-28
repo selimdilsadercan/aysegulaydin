@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 interface Props {
@@ -9,55 +9,74 @@ interface Props {
   src: string;
   title: string;
   description: string;
+  isVideo: boolean;
 }
 
-export default function Item({ className, src, title, description }: Props) {
-  const [imageDimensions, setImageDimensions] = useState({ width: 240, height: 240 });
+export default function Item({ className, src, title, description, isVideo }: Props) {
+  const [dimensions, setDimensions] = useState({ width: 240, height: 240 });
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 768); // Adjust this breakpoint as needed
+      setIsSmallScreen(window.innerWidth < 768);
     };
 
-    handleResize(); // Call once to set initial state
+    handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleImageLoad = (naturalWidth: number, naturalHeight: number) => {
+  const handleMediaLoad = (naturalWidth: number, naturalHeight: number) => {
     const aspectRatio = naturalWidth / naturalHeight;
     if (isSmallScreen) {
-      const fixedWidth = 240; // You can adjust this value
-      setImageDimensions({ width: fixedWidth, height: fixedWidth / aspectRatio });
+      const fixedWidth = 240;
+      setDimensions({ width: fixedWidth, height: fixedWidth / aspectRatio });
     } else {
       const fixedHeight = 240;
-      setImageDimensions({ width: fixedHeight * aspectRatio, height: fixedHeight });
+      setDimensions({ width: fixedHeight * aspectRatio, height: fixedHeight });
     }
   };
+
+  useEffect(() => {
+    if (isVideo && videoRef.current) {
+      videoRef.current.addEventListener("loadedmetadata", () => {
+        const video = videoRef.current;
+        if (video) {
+          handleMediaLoad(video.videoWidth, video.videoHeight);
+        }
+      });
+    }
+  }, [isVideo]);
 
   return (
     <div className={cn("flex flex-col justify-start items-start", className)}>
       <div
         className={cn("relative mb-2 md:mb-6", isSmallScreen ? "w-60 h-auto" : "w-auto h-60")}
         style={{
-          width: isSmallScreen ? "240px" : `${imageDimensions.width}px`,
-          height: isSmallScreen ? `${imageDimensions.height}px` : "240px"
+          width: isSmallScreen ? "240px" : `${dimensions.width}px`,
+          height: isSmallScreen ? `${dimensions.height}px` : "240px"
         }}
       >
-        <Image
-          src={src}
-          alt={`An Image About ${title}`}
-          className="object-cover border-2 border-white shadow-xl"
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          onLoadingComplete={({ naturalWidth, naturalHeight }) => handleImageLoad(naturalWidth, naturalHeight)}
-        />
+        {isVideo ? (
+          <video ref={videoRef} src={src} muted autoPlay className="object-cover border-2 border-white shadow-xl w-full h-full" preload="metadata">
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <Image
+            src={src}
+            alt={`An Image About ${title}`}
+            className="object-cover border-2 border-white shadow-xl"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            onLoadingComplete={({ naturalWidth, naturalHeight }) => handleMediaLoad(naturalWidth, naturalHeight)}
+          />
+        )}
       </div>
       <div
         className={cn("flex flex-col justify-start items-start overflow-hidden", isSmallScreen ? "gap-1 pl-0" : "gap-4 pl-1")}
-        style={{ width: `${imageDimensions.width}px` }}
+        style={{ width: `${dimensions.width}px` }}
       >
         <p className="w-full overflow-visible font-normal text-primary text-sm text-start uppercase">{title}</p>
         <p className="w-full line-clamp-3 font-normal text-secondary text-sm text-start">{description}</p>
