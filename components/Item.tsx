@@ -14,11 +14,13 @@ interface Props {
   isVideo: boolean;
   id?: string;
   type?: Type;
+  technical: string;
 }
 
-export default function Item({ className, src, title, description, isVideo, id, type }: Props) {
+export default function Item({ className, src, title, description, isVideo, id, type, technical }: Props) {
   const [dimensions, setDimensions] = useState({ width: 240, height: 240 });
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
 
@@ -61,8 +63,27 @@ export default function Item({ className, src, title, description, isVideo, id, 
     }
   };
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (isVideo && videoRef.current) {
+      videoRef.current.muted = false;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (isVideo && videoRef.current) {
+      videoRef.current.muted = true;
+    }
+  };
+
   return (
-    <div className={cn("flex flex-col justify-start items-start cursor-pointer", className)} onClick={handleClick}>
+    <div
+      className={cn("flex flex-col justify-start items-start cursor-pointer", className)}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div
         className={cn("relative mb-2 md:mb-6", isSmallScreen ? "w-60 h-auto" : "w-auto h-60")}
         style={{
@@ -71,7 +92,15 @@ export default function Item({ className, src, title, description, isVideo, id, 
         }}
       >
         {isVideo ? (
-          <video ref={videoRef} src={src} muted autoPlay className="object-cover border-2 border-white shadow-xl w-full h-full" preload="metadata">
+          <video
+            ref={videoRef}
+            src={src}
+            muted={!isHovered}
+            autoPlay
+            loop
+            className="object-cover border-2 border-white shadow-xl w-full h-full"
+            preload="metadata"
+          >
             Your browser does not support the video tag.
           </video>
         ) : (
@@ -91,6 +120,7 @@ export default function Item({ className, src, title, description, isVideo, id, 
       >
         <p className="w-full overflow-visible font-normal text-primary text-sm text-start uppercase">{title}</p>
         <p className="w-full line-clamp-3 font-normal text-secondary text-sm text-start">{description}</p>
+        <p className="w-full line-clamp-3 font-normal text-secondary text-sm text-start">{technical}</p>
       </div>
     </div>
   );

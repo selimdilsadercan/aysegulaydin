@@ -77,7 +77,6 @@ export default function DisplayItem({ className, src, title, description, isVide
           <video
             ref={mediaRef as React.RefObject<HTMLVideoElement>}
             src={src}
-            muted
             autoPlay
             loop
             playsInline

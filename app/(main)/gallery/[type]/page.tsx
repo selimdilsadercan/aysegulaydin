@@ -139,6 +139,7 @@ export default function Page({ params }: { params: { type: Type } }) {
                   src={node.image_url || ""}
                   title={node.name || ""}
                   description={node.description || ""}
+                  technical={node.technical || ""}
                 />
               </div>
             ))}
@@ -162,6 +163,7 @@ export default function Page({ params }: { params: { type: Type } }) {
                       src={node.image_url || ""}
                       title={node.name || ""}
                       description={node.description || ""}
+                      technical={node.technical || ""}
                     />
                   </div>
                 ))}
