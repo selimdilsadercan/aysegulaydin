@@ -31,6 +31,7 @@ export default function Page() {
   }
 
   if (!settings) {
+    router.push("/");
     return null;
   }
 

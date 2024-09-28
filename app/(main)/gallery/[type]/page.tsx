@@ -2,7 +2,6 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Node, Type } from "@/types";
-import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Exit from "@/components/Exit";
 import Item from "@/components/Item";
