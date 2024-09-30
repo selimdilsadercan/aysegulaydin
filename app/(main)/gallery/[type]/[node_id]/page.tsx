@@ -188,8 +188,6 @@ export default function Page({ params }: { params: { node_id: string } }) {
               title={node.description || ""}
               isVideo={node.is_video || false}
               onClick={() => handleItemClick(node.image_url || "", node.is_video || false)}
-              description=""
-              technical=""
             />
           ))}
           <Exit text="Exit Gallery" width={80} />
@@ -218,8 +216,6 @@ export default function Page({ params }: { params: { node_id: string } }) {
                     title={node.description || ""}
                     isVideo={node.is_video || false}
                     onClick={() => handleItemClick(node.image_url || "", node.is_video || false)}
-                    description={node.description || ""}
-                    technical={node.technical || ""}
                   />
                 </div>
               ))}

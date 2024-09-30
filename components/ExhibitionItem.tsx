@@ -10,11 +10,9 @@ interface Props {
   title: string;
   isVideo: boolean;
   onClick: () => void;
-  description: string;
-  technical: string;
 }
 
-export default function ExhibitionItem({ className, src, title, isVideo, onClick, description, technical }: Props) {
+export default function ExhibitionItem({ className, src, title, isVideo, onClick }: Props) {
   const [dimensions, setDimensions] = useState({ width: 320, height: 320 });
   const [isLoaded, setIsLoaded] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
