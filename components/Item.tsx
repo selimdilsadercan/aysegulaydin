@@ -14,10 +14,9 @@ interface Props {
   isVideo: boolean;
   id?: string;
   type?: Type;
-  technical: string;
 }
 
-export default function Item({ className, src, title, description, isVideo, id, type, technical }: Props) {
+export default function Item({ className, src, title, description, isVideo, id, type }: Props) {
   const [dimensions, setDimensions] = useState({ width: 320, height: 320 });
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
