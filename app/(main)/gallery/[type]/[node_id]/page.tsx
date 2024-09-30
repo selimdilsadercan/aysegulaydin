@@ -7,6 +7,26 @@ import DisplayItem from "@/components/DisplayItem";
 import ExhibitionItem from "@/components/ExhibitionItem";
 import { ExtendedNode, ExtraNode } from "@/types";
 
+interface OverlayProps {
+  src: string;
+  isVideo: boolean;
+  onClose: () => void;
+}
+
+const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="max-w-4xl max-h-full p-4">
+        {isVideo ? (
+          <video src={src} autoPlay loop playsInline muted className="max-w-full max-h-full object-contain" />
+        ) : (
+          <img src={src} alt="Enlarged view" className="max-w-full max-h-full object-contain" />
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default function Page({ params }: { params: { node_id: string } }) {
   const router = useRouter();
   const [selectedNode, setSelectedNode] = useState<ExtendedNode | null>(null);
@@ -17,6 +37,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
   const [contentWidth, setContentWidth] = useState(0);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [itemWidths, setItemWidths] = useState<number[]>([]);
+  const [overlayItem, setOverlayItem] = useState<{ src: string; isVideo: boolean } | null>(null);
 
   useEffect(() => {
     const fetchNodeData = async () => {
@@ -67,7 +88,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
   useEffect(() => {
     const calculateWidths = async () => {
       if (selectedNode) {
-        const mainNodeWidth = (await calculateItemWidth(selectedNode, true)) + 180;
+        const mainNodeWidth = (await calculateItemWidth(selectedNode, true)) + 360;
         const extraNodesWidths = await Promise.all(selectedNode.nodes_extras.map((node) => calculateItemWidth(node, false)));
         setItemWidths([mainNodeWidth, ...extraNodesWidths]);
       }
@@ -84,7 +105,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
       const containerWidth = containerRef.current.clientWidth;
       const gapWidth = 3;
       const exitButtonWidth = 160;
-      const totalItemsWidth = itemWidths.reduce((sum, width) => sum + width + gapWidth, 0) + exitButtonWidth + 2 * gapWidth + 20; // Added 20px for left padding
+      const totalItemsWidth = itemWidths.reduce((sum, width) => sum + width + gapWidth, 0) + exitButtonWidth + 2 * gapWidth + 20;
       const newContentWidth = Math.max(0, totalItemsWidth - containerWidth);
       setContentWidth(newContentWidth);
     } else {
@@ -129,6 +150,10 @@ export default function Page({ params }: { params: { node_id: string } }) {
     };
   }, [contentWidth, isSmallScreen]);
 
+  const handleItemClick = (src: string, isVideo: boolean) => {
+    setOverlayItem({ src, isVideo });
+  };
+
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -157,7 +182,15 @@ export default function Page({ params }: { params: { node_id: string } }) {
             isVideo={selectedNode.is_video || false}
           />
           {selectedNode.nodes_extras.map((node) => (
-            <ExhibitionItem key={node.id} src={node.image_url || ""} title={node.description || ""} isVideo={node.is_video || false} />
+            <ExhibitionItem
+              key={node.id}
+              src={node.image_url || ""}
+              title={node.description || ""}
+              isVideo={node.is_video || false}
+              onClick={() => handleItemClick(node.image_url || "", node.is_video || false)}
+              description=""
+              technical=""
+            />
           ))}
           <Exit text="Exit Gallery" width={80} />
         </div>
@@ -169,8 +202,6 @@ export default function Page({ params }: { params: { node_id: string } }) {
             style={{ transform: `translateX(${translateX}px)` }}
           >
             <div className="flex flex-row items-center gap-[3px] pl-[20px] pr-[3px] mr-10">
-              {" "}
-              {/* Added pl-[20px] for left padding */}
               <div className="flex h-fit w-fit" style={{ width: `${itemWidths[0]}px` }}>
                 <DisplayItem
                   src={selectedNode.image_url || ""}
@@ -182,7 +213,14 @@ export default function Page({ params }: { params: { node_id: string } }) {
               </div>
               {selectedNode.nodes_extras.map((node, index) => (
                 <div className="flex h-fit w-fit" key={node.id} style={{ width: `${itemWidths[index + 1]}px` }}>
-                  <ExhibitionItem src={node.image_url || ""} title={node.description || ""} isVideo={node.is_video || false} />
+                  <ExhibitionItem
+                    src={node.image_url || ""}
+                    title={node.description || ""}
+                    isVideo={node.is_video || false}
+                    onClick={() => handleItemClick(node.image_url || "", node.is_video || false)}
+                    description={node.description || ""}
+                    technical={node.technical || ""}
+                  />
                 </div>
               ))}
               <Exit className="ml-10 pt-10" text="Exit Exhibition" width={80} />
@@ -190,6 +228,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
           </div>
         </div>
       )}
+      {overlayItem && <Overlay src={overlayItem.src} isVideo={overlayItem.isVideo} onClose={() => setOverlayItem(null)} />}
     </div>
   );
 }

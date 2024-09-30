@@ -115,7 +115,7 @@ export default function DisplayItem({ className, src, title, description, techni
           </div>
         )}
       </div>
-      <div className="p-4 text-white flex flex-col justify-center max-w-md">
+      <div className="p-4 text-white flex flex-col justify-center w-[400px]">
         {title && <h2 className="text-[13px] font-normal text-primary mb-3 uppercase">{title}</h2>}
         <p className="text-[13px] font-normal text-secondary mb-3">{description}</p>
         <p className="text-[13px] font-normal text-secondary opacity-75">{technical}</p>

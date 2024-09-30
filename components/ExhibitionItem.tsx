@@ -7,11 +7,14 @@ import Image from "next/image";
 interface Props {
   className?: string;
   src: string;
-  title?: string;
+  title: string;
   isVideo: boolean;
+  onClick: () => void;
+  description: string;
+  technical: string;
 }
 
-export default function ExhibitionItem({ className, src, title, isVideo }: Props) {
+export default function ExhibitionItem({ className, src, title, isVideo, onClick, description, technical }: Props) {
   const [dimensions, setDimensions] = useState({ width: 320, height: 320 });
   const [isLoaded, setIsLoaded] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
@@ -43,8 +46,13 @@ export default function ExhibitionItem({ className, src, title, isVideo }: Props
   }, [isVideo, src]);
 
   return (
-    <div ref={containerRef} className={cn("flex flex-col items-start justify-start", className)} style={{ width: `${dimensions.width}px` }}>
-      <div className="relative" style={{ width: `${dimensions.width}px`, height: "320px" }}>
+    <div
+      ref={containerRef}
+      className={cn("flex flex-col items-start justify-start cursor-pointer", className)}
+      style={{ width: `${dimensions.width}px`, height: "320px" }}
+      onClick={onClick}
+    >
+      <div className="relative w-full h-full">
         {isVideo ? (
           <video
             ref={mediaRef as React.RefObject<HTMLVideoElement>}
