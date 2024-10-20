@@ -76,7 +76,6 @@ async function Page() {
           isSetNodes={true}
         />
         <AnimatedText title="CONTACT" variant="variant2" settings={settings} />
-        <AnimatedText title="LANGUAGE" variant="variant3" />
       </div>
     </div>
   );

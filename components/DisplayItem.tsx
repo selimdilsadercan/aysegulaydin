@@ -16,7 +16,6 @@ interface Props {
 export default function DisplayItem({ className, src, title, description, technical, isVideo }: Props) {
   const [dimensions, setDimensions] = useState({ width: 480, height: 720 });
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -74,14 +73,12 @@ export default function DisplayItem({ className, src, title, description, techni
   }, [isVideo, src]);
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
     if (isVideo && mediaRef.current instanceof HTMLVideoElement) {
       mediaRef.current.muted = false;
     }
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
     if (isVideo && mediaRef.current instanceof HTMLVideoElement) {
       mediaRef.current.muted = true;
     }
