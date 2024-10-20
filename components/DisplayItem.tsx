@@ -85,7 +85,7 @@ export default function DisplayItem({ className, src, title, description, techni
   };
 
   return (
-    <div ref={containerRef} className={cn("flex flex-col lg:flex-row items-start lg:items-center justify-center gap-6 lg:gap-12", className)}>
+    <div ref={containerRef} className={cn("flex flex-col lg:flex-row items-start lg:items-center justify-center gap-6 lg:gap-6", className)}>
       <div className="relative mx-auto lg:mx-0" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {isVideo ? (
           <div style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px` }}>
@@ -126,7 +126,7 @@ export default function DisplayItem({ className, src, title, description, techni
           </div>
         )}
       </div>
-      <div className="p-4 text-white flex flex-col justify-center w-[400px]">
+      <div className="p-4 mr-6 text-white flex flex-col justify-center w-[400px]">
         {title && <h2 className="text-[13px] font-normal text-primary mb-3 uppercase">{title}</h2>}
         <p className="text-[13px] text-justify font-normal text-secondary mb-3">{description}</p>
         <p className="text-[13px] font-normal text-secondary opacity-75">{technical}</p>

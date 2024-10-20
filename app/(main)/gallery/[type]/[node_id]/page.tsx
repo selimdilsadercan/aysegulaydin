@@ -85,7 +85,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
     if (!smallScreen && contentRef.current && containerRef.current && selectedNode) {
       const containerWidth = containerRef.current.clientWidth;
       const gapWidth = 3;
-      const exitButtonWidth = 160;
+      const exitButtonWidth = 180;
       const totalItemsWidth = itemWidths.reduce((sum, width) => sum + width + gapWidth, 0) + exitButtonWidth + 2 * gapWidth + 20;
       const newContentWidth = Math.max(0, totalItemsWidth - containerWidth);
       setContentWidth(newContentWidth);
@@ -181,7 +181,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
             style={{ transform: `translateX(${translateX}px)` }}
           >
             <div className="flex flex-row items-center gap-[3px] pl-[20px] pr-[3px] mr-10">
-              <div className="flex h-fit w-fit" style={{ width: `${itemWidths[0]}px` }}>
+              <div className="flex h-fit w-fit">
                 <DisplayItem
                   src={selectedNode.image_url || ""}
                   title={selectedNode.name || ""}
