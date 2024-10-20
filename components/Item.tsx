@@ -114,7 +114,7 @@ export default function Component({ className, src, title, description, isVideo,
       </div>
       <div className={cn("flex flex-col justify-start items-start overflow-hidden w-full", isSmallScreen ? "gap-1" : "gap-4")}>
         <p className="w-full overflow-visible font-normal text-primary text-sm uppercase">{title}</p>
-        <p className="w-full line-clamp-3 font-normal text-justify text-secondary text-sm">{description}</p>
+        <p className="w-full line-clamp-2 font-normal text-justify text-secondary text-sm">{description}</p>
       </div>
     </div>
   );
