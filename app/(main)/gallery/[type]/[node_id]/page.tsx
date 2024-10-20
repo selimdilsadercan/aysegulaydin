@@ -6,26 +6,7 @@ import Exit from "@/components/Exit";
 import DisplayItem from "@/components/DisplayItem";
 import ExhibitionItem from "@/components/ExhibitionItem";
 import { ExtendedNode, ExtraNode } from "@/types";
-
-interface OverlayProps {
-  src: string;
-  isVideo: boolean;
-  onClose: () => void;
-}
-
-const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose }) => {
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="max-w-4xl max-h-full p-4">
-        {isVideo ? (
-          <video src={src} autoPlay loop playsInline muted className="max-w-full max-h-full object-contain" />
-        ) : (
-          <img src={src} alt="Enlarged view" className="max-w-full max-h-full object-contain" />
-        )}
-      </div>
-    </div>
-  );
-};
+import Overlay from "@/components/Overlay";
 
 export default function Page({ params }: { params: { node_id: string } }) {
   const router = useRouter();
@@ -226,5 +207,5 @@ export default function Page({ params }: { params: { node_id: string } }) {
       )}
       {overlayItem && <Overlay src={overlayItem.src} isVideo={overlayItem.isVideo} onClose={() => setOverlayItem(null)} />}
     </div>
-  );
+  );  
 }

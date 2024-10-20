@@ -105,9 +105,9 @@ export default function AnimatedText({ className, title, href, image, variant, s
             )}
             {variant === "variant3" && (
               <>
+                <p className="font-normal text-primary text-[29px] hover:opacity-60">ENG</p>
                 <p className="font-normal text-primary text-[29px] hover:opacity-60">TR</p>
                 <p className="font-normal text-primary text-[29px] hover:opacity-60">ITA</p>
-                <p className="font-normal text-primary text-[29px] hover:opacity-60">ENG</p>
                 <p className="font-normal text-primary text-[29px] hover:opacity-60">ALM</p>
               </>
             )}
@@ -154,7 +154,7 @@ export default function AnimatedText({ className, title, href, image, variant, s
                   <ArrowRight size={35} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/installation")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">INSTALLATIONS</p>
+                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">INSTALLATION</p>
                   <ArrowRight size={35} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
               </>

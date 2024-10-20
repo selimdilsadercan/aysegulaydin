@@ -16,6 +16,7 @@ interface Props {
 export default function DisplayItem({ className, src, title, description, technical, isVideo }: Props) {
   const [dimensions, setDimensions] = useState({ width: 480, height: 720 });
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -72,9 +73,23 @@ export default function DisplayItem({ className, src, title, description, techni
     }
   }, [isVideo, src]);
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (isVideo && mediaRef.current instanceof HTMLVideoElement) {
+      mediaRef.current.muted = false;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (isVideo && mediaRef.current instanceof HTMLVideoElement) {
+      mediaRef.current.muted = true;
+    }
+  };
+
   return (
     <div ref={containerRef} className={cn("flex flex-col lg:flex-row items-start lg:items-center justify-center gap-6 lg:gap-12", className)}>
-      <div className="relative mx-auto lg:mx-0">
+      <div className="relative mx-auto lg:mx-0" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {isVideo ? (
           <div style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px` }}>
             <video
@@ -83,7 +98,6 @@ export default function DisplayItem({ className, src, title, description, techni
               autoPlay
               loop
               playsInline
-              muted
               className={cn("w-full h-full object-contain border-2 border-white shadow-xl", !isLoaded && "invisible")}
               onLoadedMetadata={(e) => {
                 const video = e.target as HTMLVideoElement;
@@ -117,7 +131,7 @@ export default function DisplayItem({ className, src, title, description, techni
       </div>
       <div className="p-4 text-white flex flex-col justify-center w-[400px]">
         {title && <h2 className="text-[13px] font-normal text-primary mb-3 uppercase">{title}</h2>}
-        <p className="text-[13px] font-normal text-secondary mb-3">{description}</p>
+        <p className="text-[13px] text-justify font-normal text-secondary mb-3">{description}</p>
         <p className="text-[13px] font-normal text-secondary opacity-75">{technical}</p>
       </div>
     </div>

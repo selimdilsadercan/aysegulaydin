@@ -16,7 +16,7 @@ interface Props {
   type?: Type;
 }
 
-export default function Item({ className, src, title, description, isVideo, id, type }: Props) {
+export default function Component({ className, src, title, description, isVideo, id, type }: Props) {
   const [dimensions, setDimensions] = useState({ width: 320, height: 320 });
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -84,7 +84,7 @@ export default function Item({ className, src, title, description, isVideo, id, 
       onMouseLeave={handleMouseLeave}
     >
       <div
-        className={cn("relative mb-2 md:mb-6", isSmallScreen ? "w-60 h-auto" : "w-auto h-60")}
+        className={cn("relative mb-2 md:mb-6 overflow-hidden", isSmallScreen ? "w-60 h-auto" : "w-auto h-60")}
         style={{
           width: isSmallScreen ? "320px" : `${dimensions.width}px`,
           height: isSmallScreen ? `${dimensions.height}px` : "320px"
@@ -97,7 +97,7 @@ export default function Item({ className, src, title, description, isVideo, id, 
             muted={!isHovered}
             autoPlay
             loop
-            className="object-cover border-2 border-white shadow-xl w-full h-full"
+            className={cn("object-cover border-2 border-white shadow-xl w-full h-full transition-all duration-300", !isHovered && "grayscale")}
             preload="metadata"
           >
             Your browser does not support the video tag.
@@ -106,7 +106,7 @@ export default function Item({ className, src, title, description, isVideo, id, 
           <Image
             src={src}
             alt={`An Image About ${title}`}
-            className="object-cover border-2 border-white shadow-xl"
+            className={cn("object-cover border-2 border-white shadow-xl transition-all duration-300", !isHovered && "grayscale")}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             onLoadingComplete={({ naturalWidth, naturalHeight }) => handleMediaLoad(naturalWidth, naturalHeight)}
@@ -118,7 +118,7 @@ export default function Item({ className, src, title, description, isVideo, id, 
         style={{ width: `${dimensions.width}px` }}
       >
         <p className="w-full overflow-visible font-normal text-primary text-sm text-start uppercase">{title}</p>
-        <p className="w-full line-clamp-3 font-normal text-secondary text-sm text-start">{description}</p>
+        <p className="w-full line-clamp-3 font-normal text-justify text-secondary text-sm">{description}</p>
       </div>
     </div>
   );
