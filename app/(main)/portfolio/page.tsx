@@ -16,7 +16,7 @@ async function Page() {
   return (
     <div className="h-full flex flex-row justify-center items-center bg-background">
       <Image className="w-full h-[70%] mt-12 opacity-75 object-contain hidden lg:block" src={staticSettings.signature || ""} alt="" width={100} height={200} />
-      <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-12">
+      <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-4 md:p-12">
         <AnimatedText
           image={
             nodesData
@@ -75,6 +75,7 @@ async function Page() {
           nodes={nodesData}
           isSetNodes={true}
         />
+        <AnimatedText title="STATEMENT" variant="variant1" href="/" nodes={nodesData} />
         <AnimatedText title="CONTACT" variant="variant2" settings={settings} />
       </div>
     </div>
