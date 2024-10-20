@@ -78,15 +78,15 @@ export default function Component({ className, src, title, description, isVideo,
 
   return (
     <div
-      className={cn("flex flex-col justify-start items-start cursor-pointer", className)}
+      className={cn("flex flex-col justify-start items-center cursor-pointer w-full mx-auto", className)}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div
-        className={cn("relative mb-2 md:mb-6 overflow-hidden", isSmallScreen ? "w-60 h-auto" : "w-auto h-60")}
+        className={cn("relative mb-2 md:mb-6 overflow-hidden", isSmallScreen ? "w-full h-auto" : "w-auto h-60")}
         style={{
-          width: isSmallScreen ? "320px" : `${dimensions.width}px`,
+          width: isSmallScreen ? "100%" : `${dimensions.width}px`,
           height: isSmallScreen ? `${dimensions.height}px` : "320px"
         }}
       >
@@ -112,11 +112,8 @@ export default function Component({ className, src, title, description, isVideo,
           />
         )}
       </div>
-      <div
-        className={cn("flex flex-col justify-start items-start overflow-hidden", isSmallScreen ? "gap-1 pl-0" : "gap-4 pl-1")}
-        style={{ width: `${dimensions.width}px` }}
-      >
-        <p className="w-full overflow-visible font-normal text-primary text-sm text-start uppercase">{title}</p>
+      <div className={cn("flex flex-col justify-start items-start overflow-hidden w-full", isSmallScreen ? "gap-1" : "gap-4")}>
+        <p className="w-full overflow-visible font-normal text-primary text-sm uppercase">{title}</p>
         <p className="w-full line-clamp-3 font-normal text-justify text-secondary text-sm">{description}</p>
       </div>
     </div>

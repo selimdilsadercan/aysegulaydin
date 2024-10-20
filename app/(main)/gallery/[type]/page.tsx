@@ -132,10 +132,10 @@ export default function Page({ params }: { params: { type: Type } }) {
   return (
     <div ref={containerRef} className={`h-screen ${isSmallScreen ? "overflow-y-auto" : "overflow-y-scroll overflow-x-hidden"}`}>
       {isSmallScreen ? (
-        <div className="flex flex-col items-center gap-8 py-8 px-4">
+        <div className="flex flex-col items-center gap-8 py-8 px-4 w-full">
           {filteredNodes &&
             filteredNodes.map((node, index) => (
-              <div className="flex h-fit w-fit transition-all" key={index}>
+              <div className="flex justify-center w-full transition-all" key={index}>
                 <Item
                   id={node.id}
                   type={params.type}
@@ -146,7 +146,9 @@ export default function Page({ params }: { params: { type: Type } }) {
                 />
               </div>
             ))}
-          <Exit text="Exit Gallery" width={80} />
+          <div className="flex justify-center w-full">
+            <Exit text="Exit Gallery" width={80} />
+          </div>
         </div>
       ) : (
         <div className="h-[400vh]">

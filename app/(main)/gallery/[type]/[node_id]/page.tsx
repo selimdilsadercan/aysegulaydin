@@ -70,7 +70,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
     const calculateWidths = async () => {
       if (selectedNode) {
         const mainNodeWidth = (await calculateItemWidth(selectedNode, true)) + 360;
-        const extraNodesWidths = await Promise.all(selectedNode.nodes_extras.map((node) => calculateItemWidth(node, false)));
+        const extraNodesWidths = await Promise.all(selectedNode.nodes_extras.map(() => 200));
         setItemWidths([mainNodeWidth, ...extraNodesWidths]);
       }
     };
@@ -191,7 +191,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
                 />
               </div>
               {selectedNode.nodes_extras.map((node, index) => (
-                <div className="flex h-fit w-fit" key={node.id} style={{ width: `${itemWidths[index + 1]}px` }}>
+                <div className="flex h-fit w-fit" key={node.id}>
                   <ExhibitionItem
                     src={node.image_url || ""}
                     title={node.description || ""}
