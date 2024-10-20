@@ -200,12 +200,20 @@ export default function Page({ params }: { params: { node_id: string } }) {
                   />
                 </div>
               ))}
-              <Exit className="ml-10 pt-10" text="Exit Exhibition" width={80} />
+              <Exit className="ml-10 pt-5" text="Exit Exhibition" width={80} />
             </div>
           </div>
         </div>
       )}
-      {overlayItem && <Overlay src={overlayItem.src} isVideo={overlayItem.isVideo} onClose={() => setOverlayItem(null)} />}
+      {overlayItem && (
+        <Overlay
+          src={overlayItem.src}
+          isVideo={overlayItem.isVideo}
+          onClose={() => setOverlayItem(null)}
+          description={selectedNode.description || ""}
+          technical={selectedNode.technical || ""}
+        />
+      )}
     </div>
-  );  
+  );
 }

@@ -18,44 +18,62 @@ async function Page() {
       <Image className="w-full h-[70%] mt-12 opacity-75 object-contain hidden lg:block" src={staticSettings.signature || ""} alt="" width={100} height={200} />
       <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-12">
         <AnimatedText
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
+          image={
+            nodesData
+              .filter((item) => item.is_recent && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
           title="RECENT WORKS"
           variant="variant1"
           href="/gallery/recent"
           nodes={nodesData}
         />
         <AnimatedText
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
+          image={
+            nodesData
+              .filter((item) => item.type == "photo" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
           title="PHOTO/VIDEO/AUDIO"
           variant="variant4"
           nodes={nodesData}
         />
         <AnimatedText
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
+          image={
+            nodesData
+              .filter((item) => item.type == "installation" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
           title="PERFORMANCE/INSTALLATION"
           variant="variant6"
           nodes={nodesData}
         />
         <AnimatedText
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
+          image={
+            nodesData
+              .filter((item) => item.type == "abstract" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
           title="PAINTING"
           variant="variant5"
           nodes={nodesData}
         />
         <AnimatedText
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
+          image={
+            nodesData
+              .filter((item) => item.type == "sculpture" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
           title="SCULPTURE"
           variant="variant1"
           href="/gallery/sculpture"
           nodes={nodesData}
           isSetNodes={true}
-        />
-        <AnimatedText
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTsA0St40MR0eS9rDW10jLcuqgGB_KbAPuUQ&s"
-          title="STATEMENT"
-          href="/statement"
-          variant="variant1"
-          settings={settings}
         />
         <AnimatedText title="CONTACT" variant="variant2" settings={settings} />
         <AnimatedText title="LANGUAGE" variant="variant3" />

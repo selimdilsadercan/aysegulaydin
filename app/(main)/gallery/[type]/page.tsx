@@ -169,7 +169,7 @@ export default function Page({ params }: { params: { type: Type } }) {
                     />
                   </div>
                 ))}
-              <Exit className="pt-10" text="Exit Gallery" width={80} />
+              <Exit className="pt-16" text="Exit Gallery" width={80} />
             </div>
           </div>
         </div>

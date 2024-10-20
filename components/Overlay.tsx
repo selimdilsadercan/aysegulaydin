@@ -4,9 +4,11 @@ interface OverlayProps {
   src: string;
   isVideo: boolean;
   onClose: () => void;
+  description: string;
+  technical: string;
 }
 
-const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose }) => {
+const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose, description, technical }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: "100%", height: "100%" });
@@ -29,7 +31,7 @@ const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose }) => {
         const aspectRatio = contentWidth / contentHeight;
 
         // Calculate padding based on screen size
-        const padding = Math.min(clientWidth, clientHeight) * 0.05; // 5% of the smaller dimension
+        const padding = Math.min(clientWidth, clientHeight) * 0.1; // 10% of the smaller dimension
 
         let newWidth, newHeight;
 
@@ -61,35 +63,41 @@ const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose }) => {
     <div ref={containerRef} className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-2 sm:p-4 md:p-6 lg:p-8" onClick={onClose}>
       <div
         ref={contentRef}
-        className="relative"
-        style={{ width: dimensions.width, height: dimensions.height, maxWidth: "100%", maxHeight: "100%" }}
+        className="relative flex flex-col"
+        style={{ width: dimensions.width, maxWidth: "100%", maxHeight: "100%" }}
         onClick={handleContentClick}
       >
-        {isVideo ? (
-          <video src={src} autoPlay loop playsInline controls className="w-full h-full object-contain" />
-        ) : (
-          <img src={src} alt="Enlarged view" className="w-full h-full object-contain" />
-        )}
-        <button
-          className="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-2 touch-manipulation"
-          onClick={onClose}
-          aria-label="Close overlay"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <div className="relative" style={{ height: dimensions.height }}>
+          {isVideo ? (
+            <video src={src} autoPlay loop playsInline controls className="w-full h-full object-contain" />
+          ) : (
+            <img src={src} alt="Enlarged view" className="w-full h-full object-contain" />
+          )}
+          <button
+            className="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-2 touch-manipulation"
+            onClick={onClose}
+            aria-label="Close overlay"
           >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div className="mt-2 space-y-1">
+          <p className="text-[13px] font-normal text-white truncate">{description}</p>
+          <p className="text-[13px] font-normal text-white opacity-75 truncate">{technical}</p>
+        </div>
       </div>
     </div>
   );

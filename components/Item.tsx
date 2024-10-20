@@ -94,7 +94,6 @@ export default function Component({ className, src, title, description, isVideo,
           <video
             ref={videoRef}
             src={src}
-            muted={!isHovered}
             autoPlay
             loop
             className={cn("object-cover border-2 border-white shadow-xl w-full h-full transition-all duration-300", !isHovered && "grayscale")}

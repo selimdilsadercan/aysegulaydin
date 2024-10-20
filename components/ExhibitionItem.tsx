@@ -27,8 +27,10 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
 
   useEffect(() => {
     setIsLoaded(false);
+
     if (isVideo && mediaRef.current instanceof HTMLVideoElement) {
       const videoElement = mediaRef.current;
+      videoElement.muted = true;
 
       const handleLoadedMetadata = () => {
         calculateDimensions(videoElement.videoWidth, videoElement.videoHeight);
@@ -46,11 +48,15 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
   return (
     <div
       ref={containerRef}
-      className={cn("flex flex-col items-start justify-start cursor-pointer", className)}
+      className={cn(
+        "flex flex-col items-start justify-start cursor-pointer",
+        "group", // Add group class for hover effects
+        className
+      )}
       style={{ width: `${dimensions.width}px`, height: "320px" }}
       onClick={onClick}
     >
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full overflow-hidden">
         {isVideo ? (
           <video
             ref={mediaRef as React.RefObject<HTMLVideoElement>}
@@ -58,8 +64,12 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
             autoPlay
             loop
             playsInline
-            muted
-            className={cn("w-full h-full object-cover border-2 border-white shadow-xl", !isLoaded && "invisible")}
+            className={cn(
+              "w-full h-full object-cover border-2 border-white shadow-xl",
+              "transition-all duration-300 ease-in-out",
+              "filter grayscale group-hover:filter-none", // Add monochrome effect and remove on hover
+              !isLoaded && "invisible"
+            )}
             onLoadedMetadata={(e) => {
               const video = e.target as HTMLVideoElement;
               calculateDimensions(video.videoWidth, video.videoHeight);
@@ -74,7 +84,12 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
             alt={`An Image About ${title}`}
             layout="fill"
             objectFit="cover"
-            className={cn("border-2 border-white shadow-xl", !isLoaded && "invisible")}
+            className={cn(
+              "border-2 border-white shadow-xl",
+              "transition-all duration-300 ease-in-out",
+              "filter grayscale group-hover:filter-none", // Add monochrome effect and remove on hover
+              !isLoaded && "invisible"
+            )}
             onLoadingComplete={({ naturalWidth, naturalHeight }) => calculateDimensions(naturalWidth, naturalHeight)}
           />
         )}
