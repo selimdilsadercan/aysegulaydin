@@ -100,7 +100,7 @@ export default function AnimatedText({ className, title, href, image, variant, s
                   size={28}
                   className="text-primary hover:opacity-60"
                   onClickCapture={() => settings?.contact_mail && (window.location.href = `mailto:${settings.contact_mail}`)}
-                />
+                />  
               </>
             )}
             {variant === "variant3" && (
