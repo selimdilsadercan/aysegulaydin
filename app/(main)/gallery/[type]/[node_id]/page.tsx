@@ -190,7 +190,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
                   isVideo={selectedNode.is_video || false}
                 />
               </div>
-              {selectedNode.nodes_extras.map((node, index) => (
+              {selectedNode.nodes_extras.map((node) => (
                 <div className="flex h-fit w-fit" key={node.id}>
                   <ExhibitionItem
                     src={node.image_url || ""}
