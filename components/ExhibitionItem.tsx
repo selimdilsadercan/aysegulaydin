@@ -1,40 +1,40 @@
-'use client'
+"use client";
 
-import { cn } from "@/lib/utils"
-import { useState, useEffect, useRef } from "react"
-import Image from "next/image"
+import { cn } from "@/lib/utils";
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 interface Props {
-  className?: string
-  src: string
-  title: string
-  isVideo: boolean
-  onClick: () => void
+  className?: string;
+  src: string;
+  title: string;
+  isVideo: boolean;
+  onClick: () => void;
 }
 
 export default function ExhibitionItem({ className, src, title, isVideo, onClick }: Props) {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null)
+  const [isLoaded, setIsLoaded] = useState(false);
+  const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
 
   useEffect(() => {
-    setIsLoaded(false)
+    setIsLoaded(false);
 
     if (isVideo && mediaRef.current instanceof HTMLVideoElement) {
-      const videoElement = mediaRef.current
-      videoElement.muted = true
+      const videoElement = mediaRef.current;
+      videoElement.muted = true;
 
       const handleLoadedMetadata = () => {
-        setIsLoaded(true)
-      }
+        setIsLoaded(true);
+      };
 
-      videoElement.addEventListener("loadedmetadata", handleLoadedMetadata)
-      videoElement.load() // Force reload
+      videoElement.addEventListener("loadedmetadata", handleLoadedMetadata);
+      videoElement.load(); // Force reload
 
       return () => {
-        videoElement.removeEventListener("loadedmetadata", handleLoadedMetadata)
-      }
+        videoElement.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      };
     }
-  }, [isVideo, src])
+  }, [isVideo, src]);
 
   return (
     <div
@@ -43,7 +43,7 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
         "group", // Add group class for hover effects
         className
       )}
-      style={{ width: '200px', height: '200px' }}
+      style={{ width: "300px", height: "300px" }}
       onClick={onClick}
     >
       <div className="relative w-full h-full overflow-hidden">
@@ -85,7 +85,9 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
             <p className="text-gray-500">Loading...</p>
           </div>
         )}
+        {/* Add the black mask overlay */}
+        <div className="absolute inset-0 bg-black opacity-30 group-hover:opacity-0 transition-opacity duration-300 ease-in-out" />
       </div>
     </div>
-  )
+  );
 }

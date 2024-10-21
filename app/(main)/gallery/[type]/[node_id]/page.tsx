@@ -70,7 +70,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
     const calculateWidths = async () => {
       if (selectedNode) {
         const mainNodeWidth = (await calculateItemWidth(selectedNode, true)) + 360;
-        const extraNodesWidths = await Promise.all(selectedNode.nodes_extras.map(() => 200));
+        const extraNodesWidths = await Promise.all(selectedNode.nodes_extras.map(() => 300));
         setItemWidths([mainNodeWidth, ...extraNodesWidths]);
       }
     };
