@@ -1,40 +1,25 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
-    // Function to lock the orientation
-    const lockOrientation = () => {
-      // For modern browsers
-      const orientation = window.screen.orientation as any; // Ignore 'any' type warning
-      if (orientation && typeof orientation.lock === "function") {
-        orientation.lock("portrait").catch((error: any) => {
-          console.error("Orientation lock failed:", error);
-        });
-      }
-      // For older Firefox
-      else if ((window.screen as any).mozLockOrientation) {
-        (window.screen as any).mozLockOrientation("portrait");
-      }
-      // For older IE/Edge
-      else if ((window.screen as any).msLockOrientation) {
-        (window.screen as any).msLockOrientation("portrait");
-      }
-    };
+    // Set isClient to true once the component has mounted on the client
+    setIsClient(true);
 
-    // Call the function when the component mounts
-    lockOrientation();
+    if (isClient) {
+      const mediaQuery = window.matchMedia("(max-width: 768px)"); // Mobile screen width
 
-    // Add event listener for orientation change
-    window.addEventListener("orientationchange", lockOrientation);
-
-    // Cleanup function
-    return () => {
-      window.removeEventListener("orientationchange", lockOrientation);
-    };
-  }, []);
+      if (mediaQuery.matches) {
+        // Navigate to /portfolio if on mobile
+        router.push("/portfolio");
+      }
+    }
+  }, [isClient, router]);
 
   return <div className="bg-background h-full">{children}</div>;
 }

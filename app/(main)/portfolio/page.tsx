@@ -2,6 +2,7 @@ import AnimatedText from "@/components/AnimatedText";
 import { createClient } from "@/lib/db";
 import Image from "next/image";
 import staticSettings from "@/data/settings";
+import HomeMenu from "@/components/HomeMenu";
 
 async function Page() {
   const db = createClient();
@@ -25,68 +26,7 @@ async function Page() {
         width={100}
         height={200}
       />
-      <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-4 md:p-12 relative z-10">
-        <AnimatedText
-          image={
-            nodesData
-              .filter((item) => item.is_recent && !item.is_video)
-              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
-              .at(0)?.image_url || ""
-          }
-          title="RECENT WORKS"
-          variant="variant1"
-          href="/gallery/recent"
-          nodes={nodesData}
-        />
-        <AnimatedText
-          image={
-            nodesData
-              .filter((item) => item.type == "photo" && !item.is_video)
-              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
-              .at(0)?.image_url || ""
-          }
-          title="PHOTO/VIDEO/AUDIO"
-          variant="variant4"
-          nodes={nodesData}
-        />
-        <AnimatedText
-          image={
-            nodesData
-              .filter((item) => item.type == "installation" && !item.is_video)
-              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
-              .at(0)?.image_url || ""
-          }
-          title="PERFORMANCE/INSTALLATION"
-          variant="variant6"
-          nodes={nodesData}
-        />
-        <AnimatedText
-          image={
-            nodesData
-              .filter((item) => item.type == "abstract" && !item.is_video)
-              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
-              .at(0)?.image_url || ""
-          }
-          title="PAINTING"
-          variant="variant5"
-          nodes={nodesData}
-        />
-        <AnimatedText
-          image={
-            nodesData
-              .filter((item) => item.type == "sculpture" && !item.is_video)
-              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
-              .at(0)?.image_url || ""
-          }
-          title="SCULPTURE"
-          variant="variant1"
-          href="/gallery/sculpture"
-          nodes={nodesData}
-          isSetNodes={true}
-        />
-        <AnimatedText title="STATEMENT" variant="variant1" href="/" nodes={nodesData} />
-        <AnimatedText title="CONTACT" variant="variant2" settings={settings} />
-      </div>
+      <HomeMenu nodes={nodesData} setttings={settings} />
     </div>
   );
 }
