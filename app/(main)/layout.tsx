@@ -1,24 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { useEffect } from "react";
 
 function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Function to lock the orientation
     const lockOrientation = () => {
-      if ("orientation" in screen) {
-        const screenOrientation = (screen as any).orientation;
-
-        if (screenOrientation.lock) {
-          screenOrientation.lock("portrait").catch((error: Error) => {
-            console.error("Orientation lock failed:", error);
-          });
-        } else if (screenOrientation.lockOrientation) {
-          screenOrientation.lockOrientation("portrait");
-        }
-      } else if ("mozLockOrientation" in screen) {
-        (screen as any).mozLockOrientation("portrait");
-      } else if ("msLockOrientation" in screen) {
-        (screen as any).msLockOrientation("portrait");
+      // For modern browsers
+      const orientation = window.screen.orientation as any; // Ignore 'any' type warning
+      if (orientation && typeof orientation.lock === "function") {
+        orientation.lock("portrait").catch((error: any) => {
+          console.error("Orientation lock failed:", error);
+        });
+      }
+      // For older Firefox
+      else if ((window.screen as any).mozLockOrientation) {
+        (window.screen as any).mozLockOrientation("portrait");
+      }
+      // For older IE/Edge
+      else if ((window.screen as any).msLockOrientation) {
+        (window.screen as any).msLockOrientation("portrait");
       }
     };
 
@@ -33,6 +35,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       window.removeEventListener("orientationchange", lockOrientation);
     };
   }, []);
+
   return <div className="bg-background h-full">{children}</div>;
 }
 
