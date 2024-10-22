@@ -81,7 +81,7 @@ export default function AnimatedText({ className, title, href, image, variant, s
         <div
           className={cn("h-[110px] w-full flex flex-col transition-all duration-300 ease-in-out hover:-translate-y-[55px]", isSlided && "-translate-y-[55px]")}
         >
-          <p className="h-[55px] w-fit font-normal text-primary text-[29px] flex items-center">{title}</p>
+          <p className="h-[55px] w-fit font-normal text-primary text-[29px] flex items-center overflow-hidden">{title}</p>
           <div className="h-[55px] w-fit flex items-center gap-2.5">
             {variant === "variant1" && (
               <>

@@ -39,7 +39,7 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
   return (
     <div
       className={cn(
-        "flex flex-col items-start justify-start cursor-pointer",
+        "flex flex-col items-center justify-center cursor-pointer",
         "group", // Add group class for hover effects
         className
       )}

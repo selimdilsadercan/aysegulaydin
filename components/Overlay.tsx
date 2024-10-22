@@ -69,7 +69,7 @@ const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose, description, t
       >
         <div className="relative" style={{ height: dimensions.height }}>
           {isVideo ? (
-            <video src={src} autoPlay loop playsInline controls className="w-full h-full object-contain" />
+            <video src={src} autoPlay loop playsInline className="w-full h-full object-contain" />
           ) : (
             <img src={src} alt="Enlarged view" className="w-full h-full object-contain" />
           )}

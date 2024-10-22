@@ -21,7 +21,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [isClient, router]);
 
-  return <div className="bg-background h-full">{children}</div>;
+  return <div className="bg-background h-full pointer-events-none touch-none select-none">{children}</div>;
 }
 
 export default Layout;

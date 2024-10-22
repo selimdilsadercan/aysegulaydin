@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Exit from "@/components/Exit";
 import Item from "@/components/Item";
 
-export default function Page({ params }: { params: { type: Type } }) {
+export default function Component({ params }: { params: { type: Type } }) {
   const router = useRouter();
   const [filteredNodes, setFilteredNodes] = useState<Node[] | null>(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -69,10 +69,10 @@ export default function Page({ params }: { params: { type: Type } }) {
   return (
     <div ref={containerRef} onWheel={onWheel} className={`h-screen ${isSmallScreen ? "overflow-y-auto" : "overflow-x-auto overflow-y-hidden"}`}>
       <div className={`flex ${isSmallScreen ? "flex-col items-center gap-8 py-8 px-4 w-full" : "h-screen items-center"}`}>
-        <div className={`flex ${isSmallScreen ? "flex-col" : "flex-row"} items-start gap-[120px] ${isSmallScreen ? "" : "px-[120px]"}`}>
+        <div className={`flex ${isSmallScreen ? "flex-col w-full" : "flex-row"} gap-[120px] ${isSmallScreen ? "" : "px-[120px]"}`}>
           {filteredNodes &&
             filteredNodes.map((node) => (
-              <div className={`flex ${isSmallScreen ? "justify-center w-full" : "h-fit w-fit"}`} key={node.id}>
+              <div className={`flex ${isSmallScreen ? "w-full" : ""}`} key={node.id}>
                 <Item
                   id={node.id}
                   type={params.type}
@@ -83,7 +83,7 @@ export default function Page({ params }: { params: { type: Type } }) {
                 />
               </div>
             ))}
-          <Exit className={isSmallScreen ? "w-full flex justify-center" : "pt-16"} text="Exit Gallery" width={80} />
+          <Exit className={isSmallScreen ? "h-full w-full flex justify-center" : "pt-16"} text="Exit Gallery" width={80} />
         </div>
       </div>
     </div>

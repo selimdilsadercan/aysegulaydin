@@ -2,6 +2,7 @@ import { createClient } from "@/lib/db";
 import Image from "next/image";
 import staticSettings from "@/data/settings";
 import AnimatedText from "@/components/AnimatedText";
+import { useEffect } from "react";
 
 async function Page() {
   const db = createClient();
