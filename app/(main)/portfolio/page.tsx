@@ -1,4 +1,3 @@
-import AnimatedText from "@/components/AnimatedText";
 import { createClient } from "@/lib/db";
 import Image from "next/image";
 import staticSettings from "@/data/settings";
