@@ -19,7 +19,8 @@ function HomeMenu({ nodes, setttings }: Props) {
           <AnimatedText title="RECENT WORKS" variant="variant1" href="/gallery/recent" nodes={nodes} />
           <AnimatedText title="PORTFOLIO" variant="variant1" nodes={nodes} handleClick={() => setSelected(true)} />
           <AnimatedText title="STATEMENT" variant="variant1" href="/" nodes={nodes} />
-          <AnimatedText title="CONTACT  " variant="variant2" settings={setttings} />
+          <AnimatedText title="LANGUAGE" variant="variant3" settings={setttings} />
+          <AnimatedText title="CONTACT" variant="variant2" settings={setttings} />
         </>
       )}
       {selected && (

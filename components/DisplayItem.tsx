@@ -11,9 +11,10 @@ interface Props {
   description: string;
   technical: string;
   isVideo: boolean;
+  onClick?: () => void;
 }
 
-export default function DisplayItem({ className, src, title, description, technical, isVideo }: Props) {
+export default function DisplayItem({ className, src, title, description, technical, isVideo, onClick }: Props) {
   const [dimensions, setDimensions] = useState({ width: 480, height: 720 });
   const [isLoaded, setIsLoaded] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
@@ -86,7 +87,7 @@ export default function DisplayItem({ className, src, title, description, techni
 
   return (
     <div ref={containerRef} className={cn("flex flex-col lg:flex-row items-start lg:items-center justify-center gap-6 lg:gap-6", className)}>
-      <div className="relative mx-auto lg:mx-0" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <div onClick={onClick} className="cursor-pointer relative mx-auto lg:mx-0" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {isVideo ? (
           <div style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px` }}>
             <video

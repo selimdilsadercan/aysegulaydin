@@ -86,7 +86,7 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
           </div>
         )}
         {/* Add the black mask overlay */}
-        <div className="absolute inset-0 bg-black opacity-30 group-hover:opacity-0 transition-opacity duration-300 ease-in-out" />
+        <div className="absolute inset-0 bg-black opacity-35 group-hover:opacity-0 transition-opacity duration-300 ease-in-out" />
       </div>
     </div>
   );

@@ -161,6 +161,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
             description={selectedNode.description || ""}
             technical={selectedNode.technical || ""}
             isVideo={selectedNode.is_video || false}
+            onClick={() => handleItemClick(selectedNode.image_url || "", selectedNode.is_video || false)}
           />
           {selectedNode.nodes_extras.map((node) => (
             <ExhibitionItem
@@ -188,6 +189,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
                   description={selectedNode.description || ""}
                   technical={selectedNode.technical || ""}
                   isVideo={selectedNode.is_video || false}
+                  onClick={() => handleItemClick(selectedNode.image_url || "", selectedNode.is_video || false)}
                 />
               </div>
               {selectedNode.nodes_extras.map((node) => (
