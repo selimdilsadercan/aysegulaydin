@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Type } from "@/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -76,12 +76,17 @@ export default function Component({ className, src, title, description, isVideo,
     }
   };
 
+  const preventDownload = useCallback((e: React.SyntheticEvent) => {
+    e.preventDefault();
+  }, []);
+
   return (
     <div
       className={cn("flex flex-col justify-start items-center cursor-pointer w-full mx-auto", className)}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onContextMenu={preventDownload}
     >
       <div
         className={cn("relative mb-2 md:mb-6 overflow-hidden", isSmallScreen ? "w-full h-auto" : "w-auto h-60")}
@@ -96,6 +101,9 @@ export default function Component({ className, src, title, description, isVideo,
             src={src}
             autoPlay
             loop
+            playsInline
+            controlsList="nodownload"
+            onContextMenu={preventDownload}
             className={cn("object-cover border-2 border-white shadow-xl w-full h-full transition-all duration-300", !isHovered && "grayscale")}
             preload="metadata"
           >
@@ -109,6 +117,9 @@ export default function Component({ className, src, title, description, isVideo,
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             onLoadingComplete={({ naturalWidth, naturalHeight }) => handleMediaLoad(naturalWidth, naturalHeight)}
+            onContextMenu={preventDownload}
+            draggable={false}
+            style={{ pointerEvents: "none" }}
           />
         )}
       </div>
