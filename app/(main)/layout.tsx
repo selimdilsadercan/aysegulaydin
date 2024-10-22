@@ -15,8 +15,8 @@ function Layout({ children }: { children: React.ReactNode }) {
       const mediaQuery = window.matchMedia("(max-width: 768px)"); // Mobile screen width
 
       if (mediaQuery.matches) {
-        // Navigate to /portfolio if on mobile
-        router.push("/portfolio");
+        // Navigate to /home if on mobile
+        router.push("/home");
       }
     }
   }, [isClient, router]);

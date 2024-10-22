@@ -1,17 +1,13 @@
 import { createClient } from "@/lib/db";
 import Image from "next/image";
 import staticSettings from "@/data/settings";
-import HomeMenu from "@/components/HomeMenu";
+import AnimatedText from "@/components/AnimatedText";
 
 async function Page() {
   const db = createClient();
 
-  const { data: settingsData } = await db.from("setttings").select();
-  if (!settingsData || (settingsData && settingsData.length == 0)) return null;
-  const settings = settingsData[0];
-
-  const { data: nodesData } = await db.from("nodes").select(`*, nodes_extras(*)`);
-  if (!nodesData || (nodesData && nodesData.length == 0)) return null;
+  const { data: nodes } = await db.from("nodes").select(`*, nodes_extras(*)`);
+  if (!nodes || (nodes && nodes.length == 0)) return null;
 
   return (
     <div className="h-full flex flex-row justify-center items-center bg-background relative">
@@ -25,7 +21,130 @@ async function Page() {
         width={100}
         height={200}
       />
-      <HomeMenu nodes={nodesData} setttings={settings} />
+      <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-4 md:p-12 relative z-10">
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "photo" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="PHOTOGRAHY"
+          href="/gallery/photo"
+          variant="variant1"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "video" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="VIDEOGRAHY"
+          href="/gallery/video"
+          variant="variant1"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "audio" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="AUDIO"
+          variant="variant1"
+          href="/gallery/audio"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "performance" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="PERFORMANCE"
+          variant="variant1"
+          href="/gallery/performance"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "installation" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="INSTALLATION"
+          variant="variant1"
+          href="/gallery/installation"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "drawing" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="DRAWING"
+          href="/gallery/drawing"
+          variant="variant1"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "oil" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="OIL PAINTING"
+          variant="variant1"
+          href="/gallery/oil"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "abstract" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="ABSTRACT PAINTING"
+          href="/gallery/abstract"
+          variant="variant1"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "digital" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="DIGITAL PAINTING"
+          variant="variant1"
+          href="/gallery/digital"
+          nodes={nodes}
+        />
+        <AnimatedText
+          image={
+            nodes
+              .filter((item) => item.type == "sculpture" && !item.is_video)
+              .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+              .at(0)?.image_url || ""
+          }
+          title="SCULPTURE"
+          variant="variant1"
+          href="/gallery/sculpture"
+          nodes={nodes}
+          isSetNodes={true}
+        />
+        <AnimatedText title="HOME" variant="variant1" nodes={nodes} href="/home" />
+      </div>
     </div>
   );
 }
