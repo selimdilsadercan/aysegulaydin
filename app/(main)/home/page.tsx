@@ -26,7 +26,7 @@ async function Page() {
         height={200}
       />
       <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-4 md:p-12 relative z-10">
-        <AnimatedText title="RECENT WORKS" variant="variant1" href="/gallery/recent" nodes={nodesData} />
+        <AnimatedText title="RECENT WORKS" variant="variant1" href="/gallery/recent" nodes={nodesData} isSetNodes />
         <AnimatedText title="PORTFOLIO" variant="variant1" nodes={nodesData} href="/portfolio" />
         <AnimatedText title="STATEMENT" variant="variant1" href="/" nodes={nodesData} />
         <AnimatedText title="LANGUAGE" variant="variant3" settings={settings} />

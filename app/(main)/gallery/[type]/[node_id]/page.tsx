@@ -14,7 +14,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [overlayItem, setOverlayItem] = useState<{ src: string; isVideo: boolean } | null>(null);
+  const [overlayItem, setOverlayItem] = useState<{ src: string; isVideo: boolean; description: string; technical: string } | null>(null);
 
   useEffect(() => {
     const fetchNodeData = async () => {
@@ -53,8 +53,8 @@ export default function Page({ params }: { params: { node_id: string } }) {
     };
   }, []);
 
-  const handleItemClick = (src: string, isVideo: boolean) => {
-    setOverlayItem({ src, isVideo });
+  const handleItemClick = (src: string, isVideo: boolean, description: string, technical: string) => {
+    setOverlayItem({ src, isVideo, description, technical });
   };
 
   const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
@@ -99,7 +99,9 @@ export default function Page({ params }: { params: { node_id: string } }) {
               description={selectedNode.description || ""}
               technical={selectedNode.technical || ""}
               isVideo={selectedNode.is_video || false}
-              onClick={() => handleItemClick(selectedNode.image_url || "", selectedNode.is_video || false)}
+              onClick={() =>
+                handleItemClick(selectedNode.image_url || "", selectedNode.is_video || false, selectedNode.description || "", selectedNode.technical || "")
+              }
             />
           </div>
           {selectedNode.nodes_extras.map((node) => (
@@ -108,7 +110,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
                 src={node.image_url || ""}
                 title={node.description || ""}
                 isVideo={node.is_video || false}
-                onClick={() => handleItemClick(node.image_url || "", node.is_video || false)}
+                onClick={() => handleItemClick(node.image_url || "", node.is_video || false, node.description || "", node.technical || "")}
               />
             </div>
           ))}
@@ -120,8 +122,8 @@ export default function Page({ params }: { params: { node_id: string } }) {
           src={overlayItem.src}
           isVideo={overlayItem.isVideo}
           onClose={() => setOverlayItem(null)}
-          description={selectedNode.description || ""}
-          technical={selectedNode.technical || ""}
+          description={overlayItem.description || ""}
+          technical={overlayItem.technical || ""}
         />
       )}
     </div>
