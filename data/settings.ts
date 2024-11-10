@@ -1,5 +1,5 @@
 const settings = {
-  signature: "https://bmxnokmxpfhnlsughdtt.supabase.co/storage/v1/object/public/photos/settings/logo2.png",
+  signature: "https://bmxnokmxpfhnlsughdtt.supabase.co/storage/v1/object/public/photos/assets/unnamed.png",
   name: "Aysegul Aydin",
   statement_image: "https://bmxnokmxpfhnlsughdtt.supabase.co/storage/v1/object/public/photos/settings/1727375677668000.jpg",
   statement_description:
