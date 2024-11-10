@@ -83,7 +83,7 @@ export default function Component({ params }: { params: { type: Type } }) {
                 />
               </div>
             ))}
-          <Exit className={isSmallScreen ? "h-full w-full flex justify-center" : "pt-16"} text="Exit Gallery" width={80} />
+          <Exit className={isSmallScreen ? "h-full w-full flex justify-center" : "pb-16 "} text="Exit Gallery" width={120} />
         </div>
       </div>
     </div>

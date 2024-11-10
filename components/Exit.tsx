@@ -8,11 +8,12 @@ import settings from "@/data/settings";
 interface Props {
   className?: string;
   text: string;
-  width: number;
+  width?: number;
+  height?: number;
   overridenPath?: string;
 }
 
-function Exit({ className, text, width, overridenPath }: Props) {
+export default function Exit({ className, text, width = 120, height = 200, overridenPath }: Props) {
   const router = useRouter();
 
   const handleClick = () => {
@@ -24,11 +25,11 @@ function Exit({ className, text, width, overridenPath }: Props) {
   };
 
   return (
-    <div className={cn("w-fit h-fit flex flex-col justify-center items-center gap-2.5 group cursor-pointer", className)} onClick={handleClick}>
-      <Image src={settings.signature} alt="" width={width} height={105} className="opacity-70" />
-      <p className="w-fit h-fit overflow-visible font-normal text-primary group-hover:underline text-[16px] text-start uppercase">{text}</p>
+    <div className={cn("flex flex-col items-center justify-center gap-4 group cursor-pointer", className)} onClick={handleClick}>
+      <div className="relative" style={{ width: `${width}px`, height: `${height - 80}px` }}>
+        <Image src={settings.signature} alt="" fill style={{ objectFit: "contain" }} sizes={`${Math.max(width, height)}px`} />
+      </div>
+      <p className="font-normal text-primary group-hover:underline text-base text-center uppercase">{text}</p>
     </div>
   );
 }
-
-export default Exit;
