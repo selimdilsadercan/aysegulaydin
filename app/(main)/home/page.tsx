@@ -19,7 +19,7 @@ async function Page() {
         <Image className="w-full h-full object-contain opacity-20" src={staticSettings.signature || ""} alt="Background signature" layout="fill" />
       </div>
       <div className="relative w-full h-[70%] hidden lg:block">
-        <Image className="object-contain opacity-75 hidden lg:block" src={staticSettings.signature || ""} alt="Background signature" layout="fill" />
+        <Image className="object-contain hidden lg:block" src={staticSettings.signature || ""} alt="Background signature" layout="fill" />
       </div>
       <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-4 md:p-12 relative z-10">
         <AnimatedText title="RECENT WORKS" variant="variant1" href="/gallery/recent" nodes={nodesData} isSetNodes />
