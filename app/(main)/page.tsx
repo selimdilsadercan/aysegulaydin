@@ -14,7 +14,7 @@ export default async function Page() {
       <div className="w-full xl:w-3/5 h-full flex flex-col justify-center items-center px-1 xl:px-[20px] py-6">
         <div className="w-fit flex flex-col justify-center items-center gap-4 p-[36px]">
           <p className="w-full font-semibold text-primary text-[20px] uppercase">{settings.statement_title}</p>
-          <p className="w-full font-normal text-secondary text-[18px] line-clamp-[16]">{settings.statement_description}</p>
+          <p className="w-full font-normal text-secondary text-[18px] line-clamp-[16] text-justify">{settings.statement_description}</p>
         </div>
         <Exit text="Go To Home" overridenPath="/home" width={40} />
       </div>

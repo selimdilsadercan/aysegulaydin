@@ -111,9 +111,6 @@ export default function AnimatedText({ className, title, href, image, variant, s
             {variant === "variant3" && (
               <>
                 <p className="font-normal text-primary text-[29px] hover:opacity-60">ENG</p>
-                <p className="font-normal text-primary text-[29px] hover:opacity-60">TR</p>
-                <p className="font-normal text-primary text-[29px] hover:opacity-60">ITA</p>
-                <p className="font-normal text-primary text-[29px] hover:opacity-60">ALM</p>
               </>
             )}
             {variant === "variant4" && (
