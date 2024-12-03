@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ExternalLink, Youtube } from "lucide-react";
+import { Youtube } from "lucide-react";
 
 interface OverlayProps {
   src: string;
