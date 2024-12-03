@@ -21,9 +21,16 @@ export default function Component({ params }: { params: { type: Type } }) {
     }
 
     const parsedData = JSON.parse(storedNodes) as Node[];
-    const filtered = params.type === "recent" ? parsedData.filter((node) => node.is_recent) : parsedData.filter((node) => node.type === params.type);
+    const filtered = params.type === "recent" ? parsedData.filter((node) => node.recent_work_date) : parsedData.filter((node) => node.type === params.type);
 
-    const sortedNodes = filtered.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+    const sortedNodes =
+      params.type === "recent"
+        ? filtered.sort((a, b) => {
+            const dateA = a.recent_work_date ? new Date(a.recent_work_date) : new Date(0); // Default to earliest date if null
+            const dateB = b.recent_work_date ? new Date(b.recent_work_date) : new Date(0); // Default to earliest date if null
+            return dateB.getTime() - dateA.getTime(); // Sort descending by date
+          })
+        : filtered.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 
     setFilteredNodes(sortedNodes);
     setIsLoading(false);
