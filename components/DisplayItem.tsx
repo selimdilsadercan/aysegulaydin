@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { ExternalLink } from "lucide-react";
 
 interface Props {
   className?: string;
@@ -11,10 +12,11 @@ interface Props {
   description: string;
   technical: string;
   isVideo: boolean;
+  youtubeUrl?: string;
   onClick?: () => void;
 }
 
-export default function DisplayItem({ className, src, title, description, technical, isVideo, onClick }: Props) {
+export default function DisplayItem({ className, src, title, description, technical, isVideo, youtubeUrl, onClick }: Props) {
   const [dimensions, setDimensions] = useState({ width: 480, height: 720 });
   const [isLoaded, setIsLoaded] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
@@ -130,7 +132,13 @@ export default function DisplayItem({ className, src, title, description, techni
       <div className="p-4 text-white flex flex-col justify-center w-[400px]">
         {title && <h2 className="text-[13px] font-normal text-primary mb-3 uppercase">{title}</h2>}
         <p className="text-[13px] text-justify font-normal text-secondary mb-3">{description}</p>
-        <p className="text-[13px] font-normal text-secondary opacity-75">{technical}</p>
+        <p className="text-[13px] font-normal text-secondary opacity-75 mb-3">{technical}</p>
+        {youtubeUrl && (
+          <div className="flex flex-row justify-start items-center gap-1 group cursor-pointer" onClick={() => window.open(youtubeUrl, "_blank")}>
+            <ExternalLink size={12} className="text-primary" />
+            <p className="font-normal text-primary group-hover:underline text-xs text-center">Watch Full Content</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -17,6 +17,8 @@ export default function ExhibitionItem({ className, src, title, isVideo, onClick
   const [hasError, setHasError] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
 
+  console.log(isVideo);
+
   useEffect(() => {
     setIsLoaded(false);
     setHasError(false);
