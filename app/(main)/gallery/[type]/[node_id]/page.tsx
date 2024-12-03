@@ -34,7 +34,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
       }
 
       // Sort nodes_extras by index
-      foundNode.nodes_extras.sort((a, b) => (a.index || 0) - (b.index || 0)).reverse();
+      foundNode.nodes_extras.sort((a, b) => (a.index || 0) - (b.index || 0));
 
       setSelectedNode(foundNode);
       setIsLoading(false);
