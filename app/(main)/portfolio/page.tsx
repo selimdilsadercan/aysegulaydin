@@ -25,7 +25,7 @@ async function Page() {
               .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
               .at(0)?.image_url || ""
           }
-          title="PHOTOGRAHY"
+          title="PHOTOGRAPHY"
           href="/gallery/photo"
           variant="variant1"
           nodes={nodes}
@@ -37,7 +37,7 @@ async function Page() {
               .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
               .at(0)?.image_url || ""
           }
-          title="VIDEOGRAHY"
+          title="VIDEOGRAPHY"
           href="/gallery/video"
           variant="variant1"
           nodes={nodes}
