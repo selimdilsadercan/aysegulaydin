@@ -20,3 +20,5 @@ export const useLanguageStore = create<LanguageStore>()(
     }
   )
 );
+
+// Admin auth moved to lib/admin-auth.ts for simpler localStorage usage
