@@ -2,11 +2,11 @@
 
 import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Exit from "@/components/Exit";
 import DisplayItem from "@/components/DisplayItem";
 import ExhibitionItem from "@/components/ExhibitionItem";
 import { ExtendedNode } from "@/types";
 import Overlay from "@/components/Overlay";
+import ExhibitionClient from "./ExhibitionClient";
 
 export default function Page({ params }: { params: { node_id: string } }) {
   const router = useRouter();
@@ -126,7 +126,7 @@ export default function Page({ params }: { params: { node_id: string } }) {
               />
             </div>
           ))}
-          <Exit className={isSmallScreen ? "w-full flex justify-center mt-8" : "self-center mx-10 pt-8"} text="Exit Exhibition" width={80} />
+          <ExhibitionClient isSmallScreen={isSmallScreen} />
         </div>
       </div>
       {overlayItem && (

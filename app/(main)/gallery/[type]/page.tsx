@@ -3,8 +3,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Node, Type } from "@/types";
 import { useRouter } from "next/navigation";
-import Exit from "@/components/Exit";
 import Item from "@/components/Item";
+import GalleryClient from "./GalleryClient";
 
 export default function Component({ params }: { params: { type: Type } }) {
   const router = useRouter();
@@ -90,7 +90,7 @@ export default function Component({ params }: { params: { type: Type } }) {
                 />
               </div>
             ))}
-          <Exit className={isSmallScreen ? "h-full w-full flex justify-center" : "pb-16 "} text="Exit Gallery" width={120} />
+          <GalleryClient isSmallScreen={isSmallScreen} />
         </div>
       </div>
     </div>

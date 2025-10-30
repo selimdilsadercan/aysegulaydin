@@ -1,6 +1,6 @@
-import Exit from "@/components/Exit";
 import Image from "next/image";
 import { createClient } from "@/lib/db";
+import StatementClient from "./StatementClient";
 
 export default async function Page() {
   const db = createClient();
@@ -16,7 +16,7 @@ export default async function Page() {
           <p className="w-full font-semibold text-primary text-[20px] uppercase">{settings.statement_title}</p>
           <p className="w-full font-normal text-secondary text-[18px] line-clamp-[16] text-justify">{settings.statement_description}</p>
         </div>
-        <Exit text="Go To Home" overridenPath="/home" width={40} />
+        <StatementClient />
       </div>
       <Image className="hidden xl:block w-2/5 h-full object-contain" src={settings.statement_image_url ?? ""} alt="" width={300} height={500} />
     </div>
