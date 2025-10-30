@@ -6,6 +6,7 @@ import { ArrowRight, Facebook, Instagram, Mail } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { ExtendedNode, Settings } from "@/types";
 import CustomCursor from "./CustomCursor";
+import LanguageSelector from "./LanguageSelector";
 
 interface Props {
   className?: string;
@@ -111,7 +112,7 @@ export default function AnimatedText({ className, title, href, image, isVideo = 
             )}
             {variant === "variant3" && (
               <>
-                <p className="font-normal text-primary text-[29px] hover:opacity-60">ENG</p>
+                <LanguageSelector />
               </>
             )}
             {variant === "variant4" && (

@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/db";
 import Image from "next/image";
 import staticSettings from "@/data/settings";
-import AnimatedText from "@/components/AnimatedText";
+import HomeClient from "./HomeClient";
 
 async function Page() {
   const db = createClient();
@@ -22,11 +22,7 @@ async function Page() {
         <Image className="object-contain hidden lg:block" src={staticSettings.signature || ""} alt="Background signature" layout="fill" />
       </div>
       <div className="w-full h-fit flex flex-col justify-center items-start gap-0 p-4 md:p-12 relative z-10">
-        <AnimatedText title="RECENT WORKS" variant="variant1" href="/gallery/recent" nodes={nodesData} isSetNodes />
-        <AnimatedText title="PORTFOLIO" variant="variant1" nodes={nodesData} href="/portfolio" />
-        <AnimatedText title="STATEMENT" variant="variant1" href="/" nodes={nodesData} />
-        <AnimatedText title="LANGUAGE" variant="variant3" settings={settings} />
-        <AnimatedText title="CONTACT" variant="variant2" settings={settings} />
+        <HomeClient nodesData={nodesData} settings={settings} />
       </div>
     </div>
   );
