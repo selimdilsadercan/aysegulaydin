@@ -13,16 +13,17 @@ interface Props {
   href?: string;
   variant: "variant1" | "variant2" | "variant3" | "variant4" | "variant5" | "variant6";
   image?: string;
+  isVideo?: boolean;
   settings?: Settings;
   nodes?: ExtendedNode[];
   isSetNodes?: boolean;
   handleClick?: () => void;
 }
 
-export default function AnimatedText({ className, title, href, image, variant, settings, nodes, isSetNodes = false, handleClick }: Props) {
+export default function AnimatedText({ className, title, href, image, isVideo = false, variant, settings, nodes, isSetNodes = false, handleClick }: Props) {
   const router = useRouter();
   const [isSlided, setIsSlided] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [cursorPosition, setCursorPosition] = useState({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -164,7 +165,7 @@ export default function AnimatedText({ className, title, href, image, variant, s
           </div>
         </div>
       </div>
-      {image && <CustomCursor isVisible={isHovered} src={image} x={cursorPosition.x} y={cursorPosition.y} />}
+      {image && <CustomCursor isVisible={isHovered} src={image} isVideo={isVideo} x={cursorPosition.x} y={cursorPosition.y} />}
     </>
   );
 }
