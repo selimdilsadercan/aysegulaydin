@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { createAdminClient } from "@/lib/supabase-client";
 import { Type } from "@/types";
 import { Database, Constants } from "@/lib/supabase-types";
+import CreateNodeModal from "@/components/CreateNodeModal";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 type NodeWithExtras = Database["public"]["Tables"]["nodes"]["Row"];
 
@@ -13,10 +15,19 @@ export default function AdminNodesPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const [selectedCategory, setSelectedCategory] = useState<Type | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Type | null>("photo");
   const [nodes, setNodes] = useState<NodeWithExtras[]>([]);
   const [editingNode, setEditingNode] = useState<NodeWithExtras | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    nodeId: string;
+    nodeName: string;
+  }>({
+    isOpen: false,
+    nodeId: "",
+    nodeName: ""
+  });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -44,6 +55,14 @@ export default function AdminNodesPage() {
     }
   }, [selectedCategory]);
 
+  // Update form type when selectedCategory changes and we're creating a new node
+  // Close modal if category changes while creating
+  useEffect(() => {
+    if (isCreating && selectedCategory && !editingNode) {
+      setFormData((prev) => ({ ...prev, type: selectedCategory }));
+    }
+  }, [selectedCategory, isCreating, editingNode]);
+
   const fetchNodes = async () => {
     if (!selectedCategory) return;
 
@@ -53,7 +72,7 @@ export default function AdminNodesPage() {
 
       let query = supabase.from("nodes").select("*");
 
-      query = query.eq("type", selectedCategory);
+      query = query.eq("type", selectedCategory).eq("is_active", true);
 
       const { data, error } = await query.order("index", { ascending: true, nullsFirst: false });
 
@@ -114,11 +133,23 @@ export default function AdminNodesPage() {
   const handleCreate = () => {
     setEditingNode(null);
     setIsCreating(true);
+    // Set default values for new node with selected category as type
     resetForm();
     if (selectedCategory) {
-      setFormData((prev) => ({ ...prev, type: selectedCategory }));
+      setFormData({
+        name: "",
+        description: "",
+        type: selectedCategory,
+        image_url: "",
+        youtube_link: "",
+        technical: "",
+        index: null,
+        is_video: false,
+        is_recent: false,
+        visible_date: "",
+        recent_work_date: ""
+      });
     }
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleCancel = () => {
@@ -127,7 +158,7 @@ export default function AdminNodesPage() {
     resetForm();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, uploadedImageUrl?: string, isVideo?: boolean) => {
     e.preventDefault();
 
     if (!selectedCategory) {
@@ -142,30 +173,45 @@ export default function AdminNodesPage() {
 
       const supabase = createAdminClient();
 
-      const submitData: any = {
-        name: formData.name || null,
-        description: formData.description || null,
-        type: formData.type || null,
-        image_url: formData.image_url || null,
-        youtube_link: formData.youtube_link || null,
-        technical: formData.technical || null,
-        index: formData.index,
-        is_video: formData.is_video,
-        is_recent: formData.is_recent,
-        visible_date: formData.visible_date || null,
-        recent_work_date: formData.recent_work_date || null
-      };
+      // Use uploaded URL if provided, otherwise use formData value
+      const imageUrl = uploadedImageUrl !== undefined ? uploadedImageUrl : formData.image_url;
+      const videoFlag = isVideo !== undefined ? isVideo : formData.is_video;
 
       if (editingNode) {
+        // For editing, include all fields including index and visible_date
+        const submitData: any = {
+          name: formData.name || null,
+          description: formData.description || null,
+          type: formData.type || null,
+          image_url: imageUrl || null,
+          youtube_link: formData.youtube_link || null,
+          technical: formData.technical || null,
+          index: formData.index,
+          is_video: videoFlag,
+          is_recent: formData.is_recent,
+          visible_date: formData.visible_date || null,
+          recent_work_date: formData.recent_work_date || null
+        };
+
         const { error } = await supabase.from("nodes").update(submitData).eq("id", editingNode.id);
 
         if (error) throw error;
       } else {
-        // When creating, set index to last if not provided
-        if (submitData.index === null) {
-          const maxIndex = nodes.length > 0 ? Math.max(...nodes.map((n) => n.index ?? 0)) : -1;
-          submitData.index = maxIndex + 1;
-        }
+        // When creating, automatically generate index based on latest index in that category
+        const maxIndex = nodes.length > 0 ? Math.max(...nodes.map((n) => n.index ?? 0)) : -1;
+
+        const submitData: any = {
+          name: formData.name || null,
+          description: formData.description || null,
+          type: formData.type || null,
+          image_url: imageUrl || null,
+          youtube_link: formData.youtube_link || null,
+          technical: formData.technical || null,
+          index: maxIndex + 1,
+          is_video: videoFlag,
+          is_recent: formData.is_recent,
+          recent_work_date: formData.recent_work_date || null
+        };
 
         const { error } = await supabase.from("nodes").insert(submitData).select().single();
 
@@ -175,7 +221,12 @@ export default function AdminNodesPage() {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
       fetchNodes();
-      handleCancel();
+      if (isCreating) {
+        setIsCreating(false);
+        resetForm();
+      } else {
+        handleCancel();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save node");
     } finally {
@@ -183,19 +234,30 @@ export default function AdminNodesPage() {
     }
   };
 
-  const handleDelete = async (nodeId: string) => {
-    if (!confirm("Are you sure you want to delete this node?")) return;
+  const openDeleteDialog = (nodeId: string, nodeName: string) => {
+    setDeleteDialog({
+      isOpen: true,
+      nodeId,
+      nodeName
+    });
+  };
 
+  const handleDelete = async () => {
     try {
       setError("");
       const supabase = createAdminClient();
-      const { error } = await supabase.from("nodes").delete().eq("id", nodeId);
+      const { error } = await supabase
+        .from("nodes")
+        .update({ is_active: false } as any)
+        .eq("id", deleteDialog.nodeId);
 
       if (error) throw error;
 
+      setDeleteDialog({ isOpen: false, nodeId: "", nodeName: "" });
       fetchNodes();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete node");
+      setError(err instanceof Error ? err.message : "Failed to deactivate node");
+      setDeleteDialog({ isOpen: false, nodeId: "", nodeName: "" });
     }
   };
 
@@ -272,10 +334,10 @@ export default function AdminNodesPage() {
           </div>
         </div>
 
-        {/* Create/Edit Form */}
-        {(editingNode || isCreating) && selectedCategory && (
+        {/* Edit Form (only for editing) */}
+        {editingNode && selectedCategory && (
           <div className="mb-8 bg-white border border-gray-300 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-primary mb-4">{editingNode ? "Edit Node" : "Create New Node"}</h2>
+            <h2 className="text-xl font-semibold text-primary mb-4">Edit Node</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -289,6 +351,7 @@ export default function AdminNodesPage() {
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Enter node name"
                   />
                 </div>
 
@@ -310,35 +373,6 @@ export default function AdminNodesPage() {
                       </option>
                     ))}
                   </select>
-                </div>
-
-                <div>
-                  <label htmlFor="index" className="block text-sm font-medium text-primary mb-2">
-                    Index (for ordering)
-                  </label>
-                  <input
-                    type="number"
-                    id="index"
-                    name="index"
-                    value={formData.index ?? ""}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Auto"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="visible_date" className="block text-sm font-medium text-primary mb-2">
-                    Visible Date
-                  </label>
-                  <input
-                    type="date"
-                    id="visible_date"
-                    name="visible_date"
-                    value={formData.visible_date}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
                 </div>
 
                 <div>
@@ -427,7 +461,7 @@ export default function AdminNodesPage() {
                   disabled={saving}
                   className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {saving ? "Saving..." : editingNode ? "Update Node" : "Create Node"}
+                  {saving ? "Saving..." : "Update Node"}
                 </button>
               </div>
             </form>
@@ -536,7 +570,7 @@ export default function AdminNodesPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(node.id)}
+                            onClick={() => openDeleteDialog(node.id, node.name || "Untitled")}
                             className="px-3 py-1 text-sm border border-red-300 text-red-500 rounded-md hover:bg-red-50 transition-colors"
                           >
                             Delete
@@ -557,6 +591,29 @@ export default function AdminNodesPage() {
           </div>
         )}
       </div>
+
+      {/* Create Node Modal */}
+      <CreateNodeModal
+        isOpen={isCreating && !!selectedCategory}
+        selectedCategory={selectedCategory}
+        formData={formData}
+        onClose={handleCancel}
+        onSubmit={handleSubmit}
+        onChange={handleChange}
+        saving={saving}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        title="Deactivate Node"
+        message={`Are you sure you want to deactivate "${deleteDialog.nodeName}"? This will hide it from the public site.`}
+        confirmText="Deactivate"
+        cancelText="Cancel"
+        confirmButtonClass="bg-red-500 hover:bg-red-600 focus:ring-red-500"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteDialog({ isOpen: false, nodeId: "", nodeName: "" })}
+      />
     </div>
   );
 }

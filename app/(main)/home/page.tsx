@@ -10,7 +10,7 @@ async function Page() {
   if (!settingsData || (settingsData && settingsData.length == 0)) return null;
   const settings = settingsData[0];
 
-  const { data: nodesData } = await db.from("nodes").select(`*, nodes_extras(*)`);
+  const { data: nodesData } = await db.from("nodes").select(`*, nodes_extras(*)`).eq("is_active", true);
   if (!nodesData || (nodesData && nodesData.length == 0)) return null;
 
   return (

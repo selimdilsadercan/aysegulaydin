@@ -6,7 +6,7 @@ import PortfolioClient from "./PortfolioClient";
 async function Page() {
   const db = createClient();
 
-  const { data: nodes } = await db.from("nodes").select(`*, nodes_extras(*)`);
+  const { data: nodes } = await db.from("nodes").select(`*, nodes_extras(*)`).eq("is_active", true);
   if (!nodes || (nodes && nodes.length == 0)) return null;
 
   return (

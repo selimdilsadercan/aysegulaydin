@@ -6,6 +6,8 @@ import { createAdminClient } from "@/lib/supabase-client";
 import { Database, Constants } from "@/lib/supabase-types";
 import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import ImageUploader from "@/components/ImageUploader";
+import ExtraNodeModal from "@/components/ExtraNodeModal";
 
 type NodeWithExtras = Database["public"]["Tables"]["nodes"]["Row"];
 type ExtraNode = Database["public"]["Tables"]["nodes_extras"]["Row"];
@@ -33,9 +35,13 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
     index: null as number | null,
     recent_index: null as number | null,
     is_recent: false,
+    is_video: false,
     visible_date: "",
     recent_work_date: ""
   });
+  const [showChangeImage, setShowChangeImage] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [extraFormData, setExtraFormData] = useState({
     image_url: "",
@@ -77,6 +83,7 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
         index: data.index,
         recent_index: (data as any).recent_index ?? null,
         is_recent: data.is_recent || false,
+        is_video: data.is_video || false,
         visible_date: data.visible_date || "",
         recent_work_date: data.recent_work_date || ""
       });
@@ -96,6 +103,63 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
       setExtraNodes((data || []).sort((a, b) => (a.index ?? 0) - (b.index ?? 0)));
     } catch (err) {
       console.error("Failed to load extra nodes:", err);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (!selectedFile) return;
+
+    try {
+      setUploadingImage(true);
+      setError("");
+
+      const supabase = createAdminClient();
+      const fileExt = selectedFile.name.split(".").pop();
+      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+
+      // Upload file to Supabase storage in "nodes" bucket
+      const { data, error } = await supabase.storage.from("nodes").upload(fileName, selectedFile, {
+        cacheControl: "3600",
+        upsert: false
+      });
+
+      if (error) throw error;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage.from("nodes").getPublicUrl(fileName);
+
+      if (urlData?.publicUrl) {
+        const isVideo = selectedFile.type.startsWith("video/");
+
+        // Update the node with new image URL and video status
+        const { error: updateError } = await supabase
+          .from("nodes")
+          .update({
+            image_url: urlData.publicUrl,
+            is_video: isVideo
+          } as any)
+          .eq("id", params.id);
+
+        if (updateError) throw updateError;
+
+        // Update local state
+        setFormData((prev) => ({
+          ...prev,
+          image_url: urlData.publicUrl,
+          is_video: isVideo
+        }));
+
+        setSelectedFile(null);
+        setShowChangeImage(false);
+        fetchNode(); // Refresh node data
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      setError(err instanceof Error ? err.message : "Failed to upload image");
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -119,6 +183,7 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
         index: formData.index,
         recent_index: formData.recent_index,
         is_recent: formData.is_recent,
+        is_video: formData.is_video,
         visible_date: formData.visible_date || null,
         recent_work_date: formData.recent_work_date || null
       };
@@ -213,20 +278,24 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
     resetExtraForm();
   };
 
-  const handleSubmitExtra = async (e: React.FormEvent) => {
+  const handleSubmitExtra = async (e: React.FormEvent, uploadedImageUrl?: string, isVideo?: boolean) => {
     e.preventDefault();
 
     try {
       const supabase = createAdminClient();
 
+      // Use uploaded URL if provided, otherwise use formData value
+      const imageUrl = uploadedImageUrl !== undefined ? uploadedImageUrl : extraFormData.image_url;
+      const videoFlag = isVideo !== undefined ? isVideo : extraFormData.is_video;
+
       const submitData: any = {
         node_id: params.id,
-        image_url: extraFormData.image_url || null,
+        image_url: imageUrl || null,
         description: extraFormData.description || null,
         technical: extraFormData.technical || null,
         youtube_url: extraFormData.youtube_url || null,
         index: extraFormData.index,
-        is_video: extraFormData.is_video
+        is_video: videoFlag
       };
 
       if (editingExtra) {
@@ -288,6 +357,28 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
     }
   };
 
+  const handleToggleRecent = async () => {
+    try {
+      setError("");
+      const supabase = createAdminClient();
+      const newIsRecent = !formData.is_recent;
+
+      const { error } = await supabase
+        .from("nodes")
+        .update({ is_recent: newIsRecent } as any)
+        .eq("id", params.id);
+
+      if (error) throw error;
+
+      setFormData((prev) => ({ ...prev, is_recent: newIsRecent }));
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+      fetchNode(); // Refresh node data
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update recent status");
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -324,12 +415,24 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
               <h1 className="text-3xl font-bold text-primary">{node.name || "Untitled"}</h1>
               <p className="text-sm text-secondary mt-1">ID: {node.id}</p>
             </div>
-            <button
-              onClick={() => setShowDeleteDialog(true)}
-              className="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
-            >
-              Delete Node
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={handleToggleRecent}
+                className={`px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ${
+                  formData.is_recent
+                    ? "border-green-500 text-green-700 hover:bg-green-50 focus:ring-green-500"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500"
+                }`}
+              >
+                {formData.is_recent ? "Remove from Recent Work" : "Mark as Recent Work"}
+              </button>
+              <button
+                onClick={() => setShowDeleteDialog(true)}
+                className="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+              >
+                Delete Node
+              </button>
+            </div>
           </div>
         </div>
 
@@ -342,27 +445,88 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
           {/* Left Column - Node Form */}
           <div className="space-y-6">
             {/* Preview */}
-            {formData.image_url && (
-              <div className="bg-white border border-gray-300 rounded-lg p-6">
-                <h3 className="text-sm font-medium text-primary mb-2">Preview</h3>
-                <div className="relative w-full max-w-md h-64 rounded-lg overflow-hidden bg-gray-100">
-                  <img
-                    src={formData.image_url}
-                    alt={formData.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23f3f4f6' width='400' height='300'/%3E%3Ctext fill='%239ca3af' font-family='sans-serif' font-size='18' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3EImage not available%3C/text%3E%3C/svg%3E";
-                    }}
+            <div className="bg-white border border-gray-300 rounded-lg p-6">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-sm font-medium text-primary">Preview</h3>
+                {formData.image_url && (
+                  <button
+                    type="button"
+                    onClick={() => setShowChangeImage(!showChangeImage)}
+                    className="px-3 py-1 text-xs bg-primary text-white rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
+                  >
+                    {showChangeImage ? "Cancel" : "Change Image"}
+                  </button>
+                )}
+              </div>
+
+              {showChangeImage ? (
+                <div className="space-y-4">
+                  <ImageUploader
+                    value={formData.image_url}
+                    onChange={(url) => setFormData((prev) => ({ ...prev, image_url: url }))}
+                    onFileSelect={(file) => setSelectedFile(file)}
+                    onVideoChange={(isVideo) => setFormData((prev) => ({ ...prev, is_video: isVideo }))}
+                    accept="image/*,video/*"
+                    label="Upload New Image/Video"
                   />
-                  {formData.youtube_link && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                      <span className="text-white text-4xl">▶</span>
-                    </div>
+                  {selectedFile && (
+                    <button
+                      type="button"
+                      onClick={handleImageUpload}
+                      disabled={uploadingImage}
+                      className="w-full px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {uploadingImage ? "Uploading..." : "Upload & Update Node"}
+                    </button>
                   )}
                 </div>
-              </div>
-            )}
+              ) : formData.image_url ? (
+                <div className="relative w-full max-w-md h-64 rounded-lg overflow-hidden bg-gray-100">
+                  {node.is_video || formData.is_video ? (
+                    <video src={formData.image_url} controls className="w-full h-full object-cover" />
+                  ) : (
+                    <>
+                      <img
+                        src={formData.image_url}
+                        alt={formData.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23f3f4f6' width='400' height='300'/%3E%3Ctext fill='%239ca3af' font-family='sans-serif' font-size='18' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3EImage not available%3C/text%3E%3C/svg%3E";
+                        }}
+                      />
+                      {formData.youtube_link && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                          <span className="text-white text-4xl">▶</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <p className="text-sm text-secondary">No image uploaded yet</p>
+                  <ImageUploader
+                    value=""
+                    onChange={(url) => setFormData((prev) => ({ ...prev, image_url: url }))}
+                    onFileSelect={(file) => setSelectedFile(file)}
+                    onVideoChange={(isVideo) => setFormData((prev) => ({ ...prev, is_video: isVideo }))}
+                    accept="image/*,video/*"
+                    label="Upload Image/Video"
+                  />
+                  {selectedFile && (
+                    <button
+                      type="button"
+                      onClick={handleImageUpload}
+                      disabled={uploadingImage}
+                      className="w-full px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {uploadingImage ? "Uploading..." : "Upload & Update Node"}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Edit Form */}
             <div className="bg-white border border-gray-300 rounded-lg p-6">
@@ -445,21 +609,6 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
                   <h3 className="text-lg font-medium text-primary mb-4 pb-2 border-b border-gray-200">Media</h3>
                   <div className="space-y-4">
                     <div>
-                      <label htmlFor="image_url" className="block text-sm font-medium text-primary mb-2">
-                        Image URL
-                      </label>
-                      <input
-                        type="url"
-                        id="image_url"
-                        name="image_url"
-                        value={formData.image_url}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="https://example.com/image.jpg"
-                      />
-                    </div>
-
-                    <div>
                       <label htmlFor="youtube_link" className="block text-sm font-medium text-primary mb-2">
                         YouTube Link
                       </label>
@@ -473,20 +622,6 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
                         placeholder="https://youtube.com/watch?v=..."
                       />
                     </div>
-                  </div>
-                </div>
-
-                {/* Settings */}
-                <div>
-                  <h3 className="text-lg font-medium text-primary mb-4 pb-2 border-b border-gray-200">Settings</h3>
-                  <div className="flex flex-col gap-3">
-                    <label className="flex items-center cursor-pointer">
-                      <input type="checkbox" name="is_recent" checked={formData.is_recent} onChange={handleChange} className="mr-3 w-5 h-5 text-primary" />
-                      <div>
-                        <span className="text-primary font-medium">Is Recent</span>
-                        <p className="text-xs text-secondary">Show this node in recent works section</p>
-                      </div>
-                    </label>
                   </div>
                 </div>
 
@@ -526,105 +661,6 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
                 </button>
               </div>
 
-              {/* Extra Form */}
-              {(editingExtra || isCreatingExtra) && (
-                <form onSubmit={handleSubmitExtra} className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-4">
-                  <h3 className="font-medium text-primary">{editingExtra ? "Edit Extra Node" : "Create Extra Node"}</h3>
-
-                  <div>
-                    <label htmlFor="extra_image_url" className="block text-sm font-medium text-primary mb-2">
-                      Image URL *
-                    </label>
-                    <input
-                      type="url"
-                      id="extra_image_url"
-                      name="image_url"
-                      value={extraFormData.image_url}
-                      onChange={handleExtraChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                      placeholder="https://..."
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="extra_youtube_url" className="block text-sm font-medium text-primary mb-2">
-                      YouTube URL
-                    </label>
-                    <input
-                      type="url"
-                      id="extra_youtube_url"
-                      name="youtube_url"
-                      value={extraFormData.youtube_url}
-                      onChange={handleExtraChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                      placeholder="https://..."
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="extra_description" className="block text-sm font-medium text-primary mb-2">
-                      Description
-                    </label>
-                    <textarea
-                      id="extra_description"
-                      name="description"
-                      value={extraFormData.description}
-                      onChange={handleExtraChange}
-                      rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="extra_technical" className="block text-sm font-medium text-primary mb-2">
-                      Technical
-                    </label>
-                    <textarea
-                      id="extra_technical"
-                      name="technical"
-                      value={extraFormData.technical}
-                      onChange={handleExtraChange}
-                      rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="extra_index" className="block text-sm font-medium text-primary mb-2">
-                      Index
-                    </label>
-                    <input
-                      type="number"
-                      id="extra_index"
-                      name="index"
-                      value={extraFormData.index ?? ""}
-                      onChange={handleExtraChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                      placeholder="Auto"
-                    />
-                  </div>
-
-                  <label className="flex items-center cursor-pointer">
-                    <input type="checkbox" name="is_video" checked={extraFormData.is_video} onChange={handleExtraChange} className="mr-2 w-4 h-4" />
-                    <span className="text-sm text-primary">Is Video</span>
-                  </label>
-
-                  <div className="flex justify-end gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={handleCancelExtra}
-                      className="px-4 py-2 border border-gray-300 rounded-md text-primary hover:bg-gray-50 text-sm"
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 text-sm">
-                      {editingExtra ? "Update" : "Create"}
-                    </button>
-                  </div>
-                </form>
-              )}
-
               {/* Extra Nodes List */}
               {extraNodes.length === 0 ? (
                 <div className="text-center py-8 text-secondary text-sm">No extra nodes yet</div>
@@ -658,43 +694,39 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-primary font-medium truncate">{extra.description || "No description"}</p>
-                          <p className="text-xs text-secondary mt-1">Index: {extra.index ?? "N/A"}</p>
+                          {extra.technical && <p className="text-xs text-secondary mt-1 truncate">{extra.technical}</p>}
                         </div>
 
                         {/* Actions */}
-                        <div className="flex flex-col gap-1">
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => handleReorderExtra(extra, "up")}
-                              disabled={idx === 0}
-                              className="px-2 py-1 text-xs border border-gray-300 rounded text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                              title="Move up"
-                            >
-                              ↑
-                            </button>
-                            <button
-                              onClick={() => handleReorderExtra(extra, "down")}
-                              disabled={idx === extraNodes.length - 1}
-                              className="px-2 py-1 text-xs border border-gray-300 rounded text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                              title="Move down"
-                            >
-                              ↓
-                            </button>
-                          </div>
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => handleEditExtra(extra)}
-                              className="px-2 py-1 text-xs border border-gray-300 rounded text-primary hover:bg-gray-100"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => setShowDeleteExtraDialog(extra.id)}
-                              className="px-2 py-1 text-xs border border-red-300 text-red-500 rounded hover:bg-red-50"
-                            >
-                              Del
-                            </button>
-                          </div>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => handleReorderExtra(extra, "up")}
+                            disabled={idx === 0}
+                            className="px-2 py-1 text-xs border border-gray-300 rounded text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Move up"
+                          >
+                            ↑
+                          </button>
+                          <button
+                            onClick={() => handleReorderExtra(extra, "down")}
+                            disabled={idx === extraNodes.length - 1}
+                            className="px-2 py-1 text-xs border border-gray-300 rounded text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Move down"
+                          >
+                            ↓
+                          </button>
+                          <button
+                            onClick={() => handleEditExtra(extra)}
+                            className="px-2 py-1 text-xs border border-gray-300 rounded text-primary hover:bg-gray-100"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => setShowDeleteExtraDialog(extra.id)}
+                            className="px-2 py-1 text-xs border border-red-300 text-red-500 rounded hover:bg-red-50"
+                          >
+                            Del
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -728,6 +760,17 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
         confirmButtonClass="bg-red-500 hover:bg-red-600 focus:ring-red-500"
         onConfirm={() => showDeleteExtraDialog && handleDeleteExtra(showDeleteExtraDialog)}
         onCancel={() => setShowDeleteExtraDialog(null)}
+      />
+
+      {/* Extra Node Modal */}
+      <ExtraNodeModal
+        isOpen={isCreatingExtra || !!editingExtra}
+        isEditing={!!editingExtra}
+        formData={extraFormData}
+        onClose={handleCancelExtra}
+        onSubmit={handleSubmitExtra}
+        onChange={handleExtraChange}
+        saving={saving}
       />
     </div>
   );

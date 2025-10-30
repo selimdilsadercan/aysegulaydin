@@ -51,7 +51,12 @@ export default function AdminRecentPage() {
       setLoading(true);
       const supabase = createAdminClient();
 
-      const { data, error } = await supabase.from("nodes").select("*").eq("is_recent", true).order("recent_index", { ascending: true, nullsFirst: false });
+      const { data, error } = await supabase
+        .from("nodes")
+        .select("*")
+        .eq("is_recent", true)
+        .eq("is_active", true)
+        .order("recent_index", { ascending: true, nullsFirst: false });
 
       if (error) throw error;
 
@@ -418,90 +423,97 @@ export default function AdminRecentPage() {
             <div className="text-secondary text-center py-8">No recent works found</div>
           ) : (
             <div className="space-y-4">
-              {nodes.map((node, idx) => {
-                const thumbnailUrl = node.image_url;
-                const isVideo = node.is_video || !!node.youtube_link;
-
-                return (
-                  <div key={node.id} className="border border-gray-300 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex gap-4">
-                      {/* Thumbnail */}
-                      <div className="flex-shrink-0">
-                        {thumbnailUrl ? (
-                          <div className="w-24 h-24 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
-                            {isVideo ? (
-                              <div className="relative w-full h-full">
-                                <img src={thumbnailUrl} alt={node.name || "Node thumbnail"} className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                                  <span className="text-white text-2xl">▶</span>
+              {nodes.map((node, idx) => (
+                <div key={node.id} className="border border-gray-300 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex gap-4">
+                    {/* Thumbnail */}
+                    <div className="flex-shrink-0">
+                      {node.image_url ? (
+                        <div className="w-32 h-32 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center relative">
+                          {node.is_video ? (
+                            <video src={node.image_url} className="w-full h-full object-cover" controls preload="metadata" />
+                          ) : (
+                            <>
+                              <img
+                                src={node.image_url || ""}
+                                alt={node.name || "Node thumbnail"}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src =
+                                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23f3f4f6' width='200' height='200'/%3E%3Ctext fill='%239ca3af' font-family='sans-serif' font-size='14' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3ENo image%3C/text%3E%3C/svg%3E";
+                                }}
+                              />
+                              {node.youtube_link && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
+                                  <div className="bg-white bg-opacity-90 rounded-full p-3">
+                                    <span className="text-red-600 text-3xl">▶</span>
+                                  </div>
                                 </div>
-                              </div>
-                            ) : (
-                              <img src={thumbnailUrl} alt={node.name || "Node thumbnail"} className="w-full h-full object-cover" />
-                            )}
-                          </div>
-                        ) : (
-                          <div className="w-24 h-24 rounded-md bg-gray-100 flex items-center justify-center">
-                            <span className="text-gray-400 text-xs">No image</span>
-                          </div>
-                        )}
-                      </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="w-32 h-32 rounded-md bg-gray-100 flex items-center justify-center">
+                          <span className="text-gray-400 text-xs">No image</span>
+                        </div>
+                      )}
+                    </div>
 
-                      {/* Content */}
-                      <div className="flex-1 flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-4 mb-2">
-                            <h3 className="text-lg font-semibold text-primary">{node.name || "Untitled"}</h3>
-                            {node.recent_work_date && (
-                              <span className="px-2 py-1 text-xs bg-gray-100 text-secondary rounded">
-                                {new Date(node.recent_work_date).toLocaleDateString()}
-                              </span>
-                            )}
-                          </div>
-                          {node.description && <p className="text-secondary text-sm mb-2 line-clamp-2">{node.description}</p>}
-                          <div className="flex flex-wrap gap-2 text-xs text-secondary">
-                            {node.image_url && <span>📷 Image</span>}
-                            {node.youtube_link && <span>🎥 Video</span>}
-                            {node.is_video && <span>Video Node</span>}
-                          </div>
+                    {/* Content */}
+                    <div className="flex-1 flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-4 mb-2">
+                          <h3 className="text-lg font-semibold text-primary">{node.name || "Untitled"}</h3>
+                          {node.recent_work_date && (
+                            <span className="px-2 py-1 text-xs bg-gray-100 text-secondary rounded">{new Date(node.recent_work_date).toLocaleDateString()}</span>
+                          )}
                         </div>
-                        <div className="flex gap-2 ml-4">
-                          <>
-                            <button
-                              onClick={() => handleReorder(node, "up")}
-                              disabled={nodes.indexOf(node) === 0}
-                              className="px-3 py-1 text-sm border border-gray-300 rounded-md text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                              title="Move up"
-                            >
-                              ↑
-                            </button>
-                            <button
-                              onClick={() => handleReorder(node, "down")}
-                              disabled={nodes.indexOf(node) === nodes.length - 1}
-                              className="px-3 py-1 text-sm border border-gray-300 rounded-md text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                              title="Move down"
-                            >
-                              ↓
-                            </button>
-                          </>
+                        {node.description && <p className="text-secondary text-sm mb-2 line-clamp-2">{node.description}</p>}
+                        <div className="flex flex-wrap gap-2 text-xs">
+                          {node.is_video || node.youtube_link ? (
+                            <span className="px-2 py-1 bg-red-50 text-red-600 rounded font-medium">🎥 Video</span>
+                          ) : (
+                            node.image_url && <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded font-medium">📷 Image</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-2 ml-4">
+                        <>
                           <button
-                            onClick={() => handleView(node.id)}
-                            className="px-3 py-1 text-sm border border-gray-300 rounded-md text-primary hover:bg-gray-100 transition-colors"
+                            onClick={() => handleReorder(node, "up")}
+                            disabled={nodes.indexOf(node) === 0}
+                            className="px-3 py-1 text-sm border border-gray-300 rounded-md text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            title="Move up"
                           >
-                            View
+                            ↑
                           </button>
                           <button
-                            onClick={() => openRemoveDialog(node.id, node.name || "Untitled")}
-                            className="px-3 py-1 text-sm border border-orange-300 text-orange-600 rounded-md hover:bg-orange-50 transition-colors"
+                            onClick={() => handleReorder(node, "down")}
+                            disabled={nodes.indexOf(node) === nodes.length - 1}
+                            className="px-3 py-1 text-sm border border-gray-300 rounded-md text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            title="Move down"
                           >
-                            Remove from Recent
+                            ↓
                           </button>
-                        </div>
+                        </>
+                        <button
+                          onClick={() => handleView(node.id)}
+                          className="px-3 py-1 text-sm border border-gray-300 rounded-md text-primary hover:bg-gray-100 transition-colors"
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => openRemoveDialog(node.id, node.name || "Untitled")}
+                          className="px-3 py-1 text-sm border border-orange-300 text-orange-600 rounded-md hover:bg-orange-50 transition-colors"
+                        >
+                          Remove from Recent
+                        </button>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           )}
         </div>
