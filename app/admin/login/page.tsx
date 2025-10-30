@@ -11,9 +11,9 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // If already authenticated, redirect to dashboard
+    // If already authenticated, redirect to nodes
     if (adminAuth.isAuthenticated()) {
-      router.push("/admin/dashboard");
+      router.push("/admin/nodes");
     }
   }, [router]);
 
@@ -25,7 +25,7 @@ export default function AdminLoginPage() {
     const success = adminAuth.login(password);
 
     if (success) {
-      router.push("/admin/dashboard");
+      router.push("/admin/nodes");
     } else {
       setError("Incorrect password. Please try again.");
       setPassword("");
@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         <div className="bg-white border border-gray-300 rounded-lg p-8 shadow-lg">
           <h1 className="text-2xl font-bold text-primary mb-2">Admin Login</h1>
-          <p className="text-secondary mb-6">Enter password to access admin dashboard</p>
+          <p className="text-secondary mb-6">Enter password to access admin panel</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>

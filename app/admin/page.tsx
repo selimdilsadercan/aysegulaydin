@@ -8,9 +8,9 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to dashboard if authenticated, otherwise to login
+    // Redirect to nodes if authenticated, otherwise to login
     if (adminAuth.isAuthenticated()) {
-      router.push("/admin/dashboard");
+      router.push("/admin/nodes");
     } else {
       router.push("/admin/login");
     }

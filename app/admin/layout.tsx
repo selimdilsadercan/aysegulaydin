@@ -26,9 +26,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       router.push("/admin/login");
     }
 
-    // If on login page and already authenticated, redirect to dashboard
+    // If on login page and already authenticated, redirect to nodes
     if (isLoginPage && isAuthenticated) {
-      router.push("/admin/dashboard");
+      router.push("/admin/nodes");
     }
   }, [isAuthenticated, isLoginPage, isChecking]);
 
@@ -46,7 +46,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const navItems = [
-    { href: "/admin/dashboard", label: "Dashboard" },
     { href: "/admin/nodes", label: "Nodes" },
     { href: "/admin/recent", label: "Recent Works" },
     { href: "/admin/settings", label: "Settings" }
