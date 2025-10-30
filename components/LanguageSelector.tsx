@@ -1,21 +1,22 @@
 "use client";
 
-import { useTranslations } from "@/lib/i18n-client";
-import { locales, Locale } from "@/i18n";
+import { useLanguageStore, Locale } from "@/lib/store";
+
+const locales: Locale[] = ["en", "tr", "it", "de", "fr"];
 
 export default function LanguageSelector() {
-  const { locale, setLocale, t } = useTranslations();
+  const { locale, setLocale } = useLanguageStore();
 
   const handleLanguageChange = (newLocale: Locale) => {
     setLocale(newLocale);
   };
 
   const localeNames: Record<Locale, string> = {
-    en: t("language.english"),
-    tr: t("language.turkish"),
-    it: t("language.italian"),
-    de: t("language.german"),
-    fr: t("language.french")
+    en: "ENG",
+    tr: "TR",
+    it: "IT",
+    de: "DE",
+    fr: "FR"
   };
 
   return (

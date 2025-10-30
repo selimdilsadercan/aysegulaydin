@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "@/lib/i18n-client";
 import AnimatedText from "@/components/AnimatedText";
 import { ExtendedNode } from "@/types";
 
@@ -9,8 +8,6 @@ interface Props {
 }
 
 export default function PortfolioClient({ nodes }: Props) {
-  const { t } = useTranslations();
-
   const getPortfolioItem = (type: string) => {
     const items = nodes.filter((item) => item.type == type).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
     const videoItem = items.find((item) => item.is_video);
@@ -26,7 +23,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.photography")}
+            title="PHOTOGRAPHY"
             href="/gallery/photo"
             variant="variant1"
             nodes={nodes}
@@ -39,7 +36,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.videography")}
+            title="VIDEOGRAPHY"
             href="/gallery/video"
             variant="variant1"
             nodes={nodes}
@@ -52,7 +49,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.audio")}
+            title="AUDIO"
             variant="variant1"
             href="/gallery/audio"
             nodes={nodes}
@@ -65,7 +62,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.performance")}
+            title="PERFORMANCE"
             variant="variant1"
             href="/gallery/performance"
             nodes={nodes}
@@ -78,7 +75,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.installation")}
+            title="INSTALLATION"
             variant="variant1"
             href="/gallery/installation"
             nodes={nodes}
@@ -91,7 +88,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.drawing")}
+            title="DRAWING"
             href="/gallery/drawing"
             variant="variant1"
             nodes={nodes}
@@ -104,7 +101,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.oilPainting")}
+            title="OIL PAINTING"
             variant="variant1"
             href="/gallery/oil"
             nodes={nodes}
@@ -117,7 +114,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.abstractPainting")}
+            title="ABSTRACT PAINTING"
             href="/gallery/abstract"
             variant="variant1"
             nodes={nodes}
@@ -130,7 +127,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.digitalPainting")}
+            title="DIGITAL PAINTING"
             variant="variant1"
             href="/gallery/digital"
             nodes={nodes}
@@ -143,7 +140,7 @@ export default function PortfolioClient({ nodes }: Props) {
           <AnimatedText
             image={selectedItem?.image_url || ""}
             isVideo={selectedItem?.is_video || false}
-            title={t("portfolio.sculpture")}
+            title="SCULPTURE"
             variant="variant1"
             href="/gallery/sculpture"
             nodes={nodes}
@@ -151,7 +148,7 @@ export default function PortfolioClient({ nodes }: Props) {
           />
         );
       })()}
-      <AnimatedText title={t("nav.home")} variant="variant1" nodes={nodes} href="/home" />
+      <AnimatedText title="HOME" variant="variant1" nodes={nodes} href="/home" />
     </>
   );
 }
