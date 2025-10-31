@@ -14,9 +14,6 @@ export default function AdminSettingsPage() {
   const [formData, setFormData] = useState({
     statement_title: "",
     statement_description: "",
-    statement_image_url: "",
-    signature: "",
-    main_page_image_url: "",
     contact_facebook: "",
     contact_instagram: "",
     contact_mail: ""
@@ -40,9 +37,6 @@ export default function AdminSettingsPage() {
         setFormData({
           statement_title: data.statement_title || "",
           statement_description: data.statement_description || "",
-          statement_image_url: data.statement_image_url || "",
-          signature: data.signature || "",
-          main_page_image_url: data.main_page_image_url || "",
           contact_facebook: data.contact_facebook || "",
           contact_instagram: data.contact_instagram || "",
           contact_mail: data.contact_mail || ""
@@ -70,9 +64,6 @@ export default function AdminSettingsPage() {
         .update({
           statement_title: formData.statement_title || null,
           statement_description: formData.statement_description || null,
-          statement_image_url: formData.statement_image_url || null,
-          signature: formData.signature || null,
-          main_page_image_url: formData.main_page_image_url || null,
           contact_facebook: formData.contact_facebook || null,
           contact_instagram: formData.contact_instagram || null,
           contact_mail: formData.contact_mail || null
@@ -150,55 +141,6 @@ export default function AdminSettingsPage() {
                 rows={6}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="Enter statement description"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="statement_image_url" className="block text-sm font-medium text-primary mb-2">
-                Statement Image URL
-              </label>
-              <input
-                type="url"
-                id="statement_image_url"
-                name="statement_image_url"
-                value={formData.statement_image_url}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="https://..."
-              />
-            </div>
-          </div>
-
-          <div className="bg-white border border-gray-300 rounded-lg p-6 space-y-6">
-            <h2 className="text-xl font-semibold text-primary border-b border-gray-200 pb-2"> Branding</h2>
-
-            <div>
-              <label htmlFor="signature" className="block text-sm font-medium text-primary mb-2">
-                Signature Image URL
-              </label>
-              <input
-                type="url"
-                id="signature"
-                name="signature"
-                value={formData.signature}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="https://..."
-              />
-            </div>
-
-            <div>
-              <label htmlFor="main_page_image_url" className="block text-sm font-medium text-primary mb-2">
-                Main Page Image URL
-              </label>
-              <input
-                type="url"
-                id="main_page_image_url"
-                name="main_page_image_url"
-                value={formData.main_page_image_url}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="https://..."
               />
             </div>
           </div>
