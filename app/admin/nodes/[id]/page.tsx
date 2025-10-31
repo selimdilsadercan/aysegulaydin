@@ -673,7 +673,9 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
                         <div className="flex-shrink-0">
                           {extra.image_url ? (
                             <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
-                              {extra.is_video || extra.youtube_url ? (
+                              {extra.is_video ? (
+                                <video src={extra.image_url} className="w-full h-full object-cover" controls preload="metadata" />
+                              ) : extra.youtube_url ? (
                                 <div className="relative w-full h-full">
                                   <img src={extra.image_url} alt="" className="w-full h-full object-cover" />
                                   <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">

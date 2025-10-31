@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-export type Locale = "en" | "tr" | "it" | "de" | "fr";
+export type Locale = "en";
 
 interface LanguageStore {
   locale: Locale;

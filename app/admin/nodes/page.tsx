@@ -271,17 +271,29 @@ export default function AdminNodesPage() {
       setError("");
       const supabase = createAdminClient();
 
-      const currentIndex = node.index ?? 0;
-      const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+      // Find current position in the array
+      const currentArrayIndex = nodes.findIndex((n) => n.id === node.id);
+      const targetArrayIndex = direction === "up" ? currentArrayIndex - 1 : currentArrayIndex + 1;
 
-      // Call the swap function
-      const { error } = await supabase.rpc("swap_node_items", {
-        index1: currentIndex,
-        direction: direction,
-        type_string: selectedCategory
-      });
+      // Check if target position is valid
+      if (targetArrayIndex < 0 || targetArrayIndex >= nodes.length) {
+        return;
+      }
 
-      if (error) throw error;
+      const currentNode = nodes[currentArrayIndex];
+      const targetNode = nodes[targetArrayIndex];
+
+      const currentIndex = currentNode.index ?? 0;
+      const targetIndex = targetNode.index ?? 0;
+
+      // Swap the index values
+      const { error: error1 } = await supabase.from("nodes").update({ index: targetIndex }).eq("id", currentNode.id);
+
+      if (error1) throw error1;
+
+      const { error: error2 } = await supabase.from("nodes").update({ index: currentIndex }).eq("id", targetNode.id);
+
+      if (error2) throw error2;
 
       fetchNodes();
     } catch (err) {

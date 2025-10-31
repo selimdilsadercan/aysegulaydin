@@ -2,7 +2,7 @@
 
 import { useLanguageStore, Locale } from "@/lib/store";
 
-const locales: Locale[] = ["en", "tr", "it", "de", "fr"];
+const locales: Locale[] = ["en"];
 
 export default function LanguageSelector() {
   const { locale, setLocale } = useLanguageStore();
@@ -12,11 +12,7 @@ export default function LanguageSelector() {
   };
 
   const localeNames: Record<Locale, string> = {
-    en: "ENG",
-    tr: "TR",
-    it: "IT",
-    de: "DE",
-    fr: "FR"
+    en: "ENG"
   };
 
   return (
