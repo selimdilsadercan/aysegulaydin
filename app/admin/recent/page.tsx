@@ -482,7 +482,7 @@ export default function AdminRecentPage() {
                         <>
                           <button
                             onClick={() => handleReorder(node, "up")}
-                            disabled={nodes.indexOf(node) === 0}
+                            disabled={idx === 0}
                             className="px-3 py-1 text-sm border border-gray-300 rounded-md text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title="Move up"
                           >
@@ -490,7 +490,7 @@ export default function AdminRecentPage() {
                           </button>
                           <button
                             onClick={() => handleReorder(node, "down")}
-                            disabled={nodes.indexOf(node) === nodes.length - 1}
+                            disabled={idx === nodes.length - 1}
                             className="px-3 py-1 text-sm border border-gray-300 rounded-md text-primary hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title="Move down"
                           >

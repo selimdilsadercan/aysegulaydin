@@ -363,14 +363,38 @@ export default function NodeDetailPage({ params }: { params: { id: string } }) {
       const supabase = createAdminClient();
       const newIsRecent = !formData.is_recent;
 
-      const { error } = await supabase
-        .from("nodes")
-        .update({ is_recent: newIsRecent } as any)
-        .eq("id", params.id);
+      let updateData: any = { is_recent: newIsRecent };
+
+      if (newIsRecent) {
+        // When marking as recent, find the minimum recent_index and set this node's index to min - 1
+        const { data: recentNodes, error: fetchError } = await supabase
+          .from("nodes")
+          .select("recent_index")
+          .eq("is_recent", true)
+          .eq("is_active", true)
+          .neq("id", params.id) // Exclude current node
+          .not("recent_index", "is", null);
+
+        if (fetchError) throw fetchError;
+
+        if (recentNodes && recentNodes.length > 0) {
+          const recentIndices = recentNodes.map((n) => (n as any).recent_index ?? 0);
+          const minIndex = Math.min(...recentIndices);
+          updateData.recent_index = minIndex - 1;
+        } else {
+          // If no recent nodes exist (excluding current), start with 0
+          updateData.recent_index = 0;
+        }
+      } else {
+        // When removing from recent, set recent_index to null
+        updateData.recent_index = null;
+      }
+
+      const { error } = await supabase.from("nodes").update(updateData).eq("id", params.id);
 
       if (error) throw error;
 
-      setFormData((prev) => ({ ...prev, is_recent: newIsRecent }));
+      setFormData((prev) => ({ ...prev, is_recent: newIsRecent, recent_index: updateData.recent_index }));
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
       fetchNode(); // Refresh node data
