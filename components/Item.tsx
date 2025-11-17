@@ -224,7 +224,7 @@ export default function Component({ className, src, title, description, isVideo,
         {isVideo && isHovered && (
           <button
             onClick={toggleSound}
-            className="absolute top-2 right-2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full p-2 transition-all duration-200 z-10"
+            className="absolute bottom-2 right-2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full p-2 transition-all duration-200 z-10"
             aria-label={isSoundEnabled ? "Disable sound" : "Enable sound"}
           >
             {isSoundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
