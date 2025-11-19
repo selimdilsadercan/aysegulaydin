@@ -12,7 +12,7 @@ interface Props {
   className?: string;
   title: string;
   href?: string;
-  variant: "variant1" | "variant2" | "variant3" | "variant4" | "variant5" | "variant6";
+  variant: "variant1" | "variant2" | "variant3" | "variant4" | "variant5" | "variant6"
   image?: string;
   isVideo?: boolean;
   settings?: Settings;
@@ -79,15 +79,22 @@ export default function AnimatedText({ className, title, href, image, isVideo = 
 
   return (
     <>
-      <div ref={containerRef} className={cn("h-[55px] w-full overflow-hidden cursor-pointer relative", className)} onClick={handleInteraction}>
+      <div
+        ref={containerRef}
+        className={cn("h-[50px] md:h-[55px] w-full overflow-hidden cursor-pointer relative", className)}
+        onClick={handleInteraction}
+      >
         <div
-          className={cn("h-[110px] w-full flex flex-col transition-all duration-300 ease-in-out hover:-translate-y-[55px]", isSlided && "-translate-y-[55px]")}
+          className={cn(
+            "h-[100px] md:h-[110px] w-full flex flex-col transition-all duration-300 ease-in-out hover:-translate-y-[50px] md:hover:-translate-y-[55px]",
+            isSlided ? "-translate-y-[50px] md:-translate-y-[55px]" : ""
+          )}
         >
-          <p className="h-[55px] w-fit font-normal text-primary text-[29px] flex items-center overflow-hidden">{title}</p>
-          <div className="h-[55px] w-fit flex items-center gap-2.5">
+          <p className="h-[50px] md:h-[55px] w-full font-normal text-primary text-[24px] md:text-[29px] flex items-center overflow-hidden whitespace-nowrap truncate">{title}</p>
+          <div className="h-[50px] md:h-[55px] w-full flex items-center gap-2.5 overflow-hidden">
             {variant === "variant1" && (
               <>
-                <p className="font-normal text-primary text-[29px] opacity-60">{title}</p>
+                <p className="font-normal text-primary text-[24px] md:text-[29px] opacity-60">{title}</p>
                 <ArrowRight size={28} className="text-primary opacity-60" />
               </>
             )}
@@ -118,15 +125,15 @@ export default function AnimatedText({ className, title, href, image, isVideo = 
             {variant === "variant4" && (
               <>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/photo")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">PHOTO</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">PHOTO</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/video")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">VIDEO</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">VIDEO</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/audio")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">AUDIO</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">AUDIO</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
               </>
@@ -134,19 +141,19 @@ export default function AnimatedText({ className, title, href, image, isVideo = 
             {variant === "variant5" && (
               <>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/drawing")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">DRAWING</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">DRAWING</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/oil")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">OIL</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">OIL</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/abstract")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">ABSTRACT</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">ABSTRACT</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/digital")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">DIGITAL</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">DIGITAL</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
               </>
@@ -154,11 +161,11 @@ export default function AnimatedText({ className, title, href, image, isVideo = 
             {variant === "variant6" && (
               <>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/performance")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">PERFORMANCE</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">PERFORMANCE</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
                 <div className="group flex flex-row items-center" onClick={() => router.push("/gallery/installation")}>
-                  <p className="font-normal text-primary text-[29px] group-hover:opacity-60">INSTALLATION</p>
+                  <p className="font-normal text-primary text-[24px] md:text-[29px] group-hover:opacity-60">INSTALLATION</p>
                   <ArrowRight size={28} className="hidden group-hover:block text-primary opacity-60" />
                 </div>
               </>

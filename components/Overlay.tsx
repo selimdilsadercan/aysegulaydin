@@ -16,6 +16,7 @@ const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose, description, t
   const mediaRef = useRef<HTMLImageElement | HTMLVideoElement>(null);
   const [dimensions, setDimensions] = useState({ width: "100%", height: "100%" });
   const [actualWidth, setActualWidth] = useState("100%");
+  const [detailsMaxHeight, setDetailsMaxHeight] = useState<string | null>(null);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -40,6 +41,10 @@ const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose, description, t
 
         let newWidth, newHeight;
 
+
+        // Limit media to a reasonable portion of the viewport so details area can have space.
+        const maxMediaHeightRatio = 0.65; // media will take at most 65% of container height
+
         if ((clientWidth - padding * 2) / (clientHeight - padding * 2) > containerAspectRatio) {
           // Container is wider than content
           newHeight = clientHeight - padding * 2;
@@ -48,6 +53,13 @@ const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose, description, t
           // Container is taller than content
           newWidth = clientWidth - padding * 2;
           newHeight = newWidth / containerAspectRatio;
+        }
+
+        // Enforce max media height ratio to leave more room for details
+        const maxMediaHeight = clientHeight * maxMediaHeightRatio;
+        if (newHeight > maxMediaHeight) {
+          newHeight = maxMediaHeight;
+          newWidth = newHeight * containerAspectRatio;
         }
 
         setDimensions({ width: `${newWidth}px`, height: `${newHeight}px` });
@@ -76,6 +88,10 @@ const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose, description, t
         }
 
         setActualWidth(`${actualDisplayedWidth}px`);
+
+        // Calculate available height for the details area (so it can scroll when needed)
+        const availableForDetails = clientHeight - newHeight - padding * 2 - 40; // 40px for spacing/buttons
+        setDetailsMaxHeight(`${Math.max(80, Math.floor(availableForDetails))}px`);
       }
     };
 
@@ -154,7 +170,10 @@ const Overlay: React.FC<OverlayProps> = ({ src, isVideo, onClose, description, t
             </button>
           )}
         </div>
-        <div className="mt-4 space-y-2 text-left" style={{ width: actualWidth }}>
+        <div
+          className="mt-4 space-y-2 text-left overflow-y-auto pr-2 overlay-scrollbar"
+          style={{ width: actualWidth, maxHeight: detailsMaxHeight || "30vh" }}
+        >
           <p className="text-sm font-normal text-white">{description}</p>
           <p className="text-sm font-normal text-white opacity-75">{technical}</p>
         </div>

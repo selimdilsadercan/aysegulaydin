@@ -25,7 +25,7 @@ export default function Exit({ className, text, width = 120, height = 200, overr
   };
 
   return (
-    <div className={cn("flex flex-col items-center justify-center gap-4 group cursor-pointer", className)} onClick={handleClick}>
+    <div className={cn("flex flex-col items-center justify-center gap-4 group cursor-pointer mb-8", className)} onClick={handleClick}>
       <div className="relative" style={{ width: `${width + 60}px`, height: `${height - 80}px` }}>
         <Image src={settings.signature} alt="" fill style={{ objectFit: "contain" }} sizes={`${Math.max(width, height)}px`} />
       </div>
